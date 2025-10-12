@@ -1,0 +1,84 @@
+## -------------------------
+## Build output
+## -------------------------
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]ogs/
+
+## -------------------------
+## Visual Studio / MSBuild
+## -------------------------
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## -------------------------
+## JetBrains Rider / IntelliJ
+## -------------------------
+.idea/
+*.iml
+
+## -------------------------
+## OS generated files
+## -------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+## -------------------------
+## Temporary / cache files
+## -------------------------
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.lock
+
+## -------------------------
+## NuGet
+## -------------------------
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+.nuget/
+project.lock.json
+project.assets.json
+
+## -------------------------
+## Build system
+## -------------------------
+*.targets
+*.props
+
+## -------------------------
+## ReSharper / Rider caches
+## -------------------------
+_ReSharper*/
+*.DotSettings.user
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/shelf/
+.idea/**/httpRequests/
+.idea/**/dictionaries/
+
+## -------------------------
+## Test results
+## -------------------------
+TestResults/
+*.coverage
+*.coveragexml
+
+## -------------------------
+## Misc
+## -------------------------
+*.orig
+*.rej
+*.bak
+*.old

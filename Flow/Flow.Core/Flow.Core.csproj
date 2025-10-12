@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>9</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <!-- 빌드 산출물(bin, obj)을 저장할 공통 루트 -->
+        <BaseOutputPath>$(SolutionDir)build\bin\</BaseOutputPath>
+        <BaseIntermediateOutputPath>$(SolutionDir)build\obj\</BaseIntermediateOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="build\" />
+    </ItemGroup>
+    
+</Project>
