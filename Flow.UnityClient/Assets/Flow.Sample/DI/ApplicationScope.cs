@@ -2,7 +2,7 @@
 using VContainer;
 using VContainer.Unity;
 
-namespace Flow.Sample
+namespace Flow.Sample.DI
 {
     public class ApplicationScope : LifetimeScope
     {
