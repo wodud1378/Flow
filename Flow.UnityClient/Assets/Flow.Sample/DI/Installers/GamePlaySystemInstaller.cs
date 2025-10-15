@@ -1,17 +1,33 @@
+using Flow.Sample.Entities;
+using Flow.Sample.Entities.Interfaces;
 using Flow.Sample.GamePlay.Systems;
-using VContainer;
+using Flow.Sample.GamePlay.Systems.Base;
+using System.Collections.Generic;
 
 namespace Flow.Sample.DI.Installers
 {
+    /// <summary>
+    /// Factory class for creating game systems
+    /// This is used when not using dependency injection container
+    /// </summary>
     public static class GamePlaySystemInstaller
     {
-        public static void Install(ContainerBuilder builder)
+        public static List<BaseSystem> CreateGameSystems(IEntityContainer entityContainer)
         {
-            builder.Register<CombatSystem>(Lifetime.Scoped);
-            builder.Register<EnemySystem>(Lifetime.Scoped);
-            builder.Register<PathSystem>(Lifetime.Scoped);
-            builder.Register<TowerSystem>(Lifetime.Scoped);
-            builder.Register<WaveSystem>(Lifetime.Scoped);
+            var systems = new List<BaseSystem>();
+            
+            // Create all game systems
+            systems.Add(new TowerSystem(entityContainer));
+            systems.Add(new EnemySystem(entityContainer));
+            systems.Add(new ProjectileSystem(entityContainer));
+            systems.Add(new CombatSystem(entityContainer));
+            
+            return systems;
+        }
+        
+        public static IEntityContainer CreateEntityContainer()
+        {
+            return new EntityContainer();
         }
     }
 }

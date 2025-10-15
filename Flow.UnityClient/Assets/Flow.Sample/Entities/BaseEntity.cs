@@ -8,6 +8,7 @@ namespace Flow.Sample.Entities
     public abstract class BaseEntity : MonoBehaviour
     {
         private readonly Dictionary<Type, IComponent> _componentCache = new();
+        private readonly Dictionary<Type, Component> _rawComponentCache = new();
         
         public int Id { get; private set; }
         public bool IsValid { get; private set; }

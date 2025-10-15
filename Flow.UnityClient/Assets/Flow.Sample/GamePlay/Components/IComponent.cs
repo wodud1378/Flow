@@ -1,6 +1,6 @@
 namespace Flow.Sample.GamePlay.Components
 {
-    public class IComponent
+    public interface IComponent
     {
         
     }
