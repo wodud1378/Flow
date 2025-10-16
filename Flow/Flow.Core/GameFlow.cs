@@ -1,25 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Xml.Linq;
 using Cysharp.Threading.Tasks;
 using Flow.Core.CompleteActions;
 using Flow.Core.Interfaces;
 using Flow.Core.Interruptions;
 using Flow.Core.Model;
+using Flow.Core.Updates;
+using UnityEngine;
 
 namespace Flow.Core
 {
-    public class GameFlow
+    public class GameFlow : MonoBehaviour
     {
-        private readonly IGameContext _context;
-        private readonly IGameStateHandler _gameStateHandler;
+        private IGameContext _context;
+        private IGameStateHandler _gameStateHandler;
         
-        private readonly List<IInterruption> _interruptions;
-        private readonly IReadOnlyList<ICompletionAction> _completionActions;
-        private readonly IReadOnlyList<IAsyncCompletionAction> _asyncCompletionActions;
+        private List<IInterruption> _interruptions;
+        private IReadOnlyList<ICompletionAction> _completionActions;
+        private IReadOnlyList<IAsyncCompletionAction> _asyncCompletionActions;
+
+        private Dictionary<UpdateType, BaseUpdateGroup> _updateGroups;
 
         private CancellationToken _ct;
+        private CancellationTokenSource _runningStateCts;
+        
         private IInterruption _currentInterruption;
 
         public GameState State
@@ -37,40 +42,83 @@ namespace Flow.Core
 
         private GameState _state;
 
-        public GameFlow(
+        public void InitializeDependencies(
             IGameContext context,
             IGameStateHandler gameStateHandler,
-            IInterruptionProvider interruptionProvider,
-            ICompleteActionProvider completeActionProvider)
+            IFlowServiceProvider serviceProvider)
         {
             _context = context;
             _gameStateHandler = gameStateHandler;
-            _interruptions = interruptionProvider.ProvideInterruptions();
+            _interruptions = serviceProvider.Interruption.ProvideInterruptions();
 
-            var (actions, asyncActions) = completeActionProvider.GetActions();
-            _completionActions = actions;
-            _asyncCompletionActions = asyncActions;
+            var (actionList, asyncActionList) = serviceProvider.CompleteAction.GetActions();
+            _completionActions = actionList;
+            _asyncCompletionActions = asyncActionList;
+
+            _updateGroups = serviceProvider.UpdateGroup
+                .GetUpdateGroups()
+                .ToDictionary(x => x.UpdateType, x => x);
         }
         
-        public async UniTask RunAsync(CancellationToken ct)
+        public async UniTask RunAsync()
         {
-            _ct = ct;
-            
-            State = GameState.PreInitialization;
-            await PlayInterruptionsAsync(GameState.PreInitialization);
+            _ct = this.GetCancellationTokenOnDestroy();
             
             State = GameState.Initialization;
-            await PlayInterruptionsAsync(GameState.Initialization);
+            await PlayInterruptionsAsync(GameState.Initialization, _ct);
 
             State = GameState.Running;
         }
 
+        public async UniTask QuitAsync()
+        {
+            _runningStateCts?.Cancel();
+            State = GameState.End;
+
+            foreach (var action in _completionActions)
+            {
+                action.Execute(_context);
+            }
+
+            foreach (var action in _asyncCompletionActions)
+            {
+                await action.ExecuteAsync(_context);
+            }
+        }
+
         private void Update()
         {
+            if (!EnableUpdate())
+                return;
+
+            if (_updateGroups.TryGetValue(UpdateType.Update, out var group))
+                group.Update(Time.deltaTime);
             
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_ct, _runningStateCts.Token);
+            PlayInterruptionsAsync(GameState.Running, linkedCts.Token).Forget();
         }
+
+        private void FixedUpdate()
+        {
+            if (!EnableUpdate())
+                return;
+
+            if (_updateGroups.TryGetValue(UpdateType.FixedUpdate, out var group))
+                group.Update(Time.deltaTime);
+        }
+
+        private void LateUpdate()
+        {
+            if (!EnableUpdate())
+                return;
+            
+            if (_updateGroups.TryGetValue(UpdateType.LateUpdate, out var group))
+                group.Update(Time.deltaTime);
+        }
+
+        private bool EnableUpdate() => State == GameState.Running && _currentInterruption == null;
         
-        private async UniTask PlayInterruptionsAsync(GameState state)
+        private async UniTask PlayInterruptionsAsync(GameState state, CancellationToken ct)
         {
             if (_currentInterruption != null)
                 return;
@@ -87,7 +135,7 @@ namespace Flow.Core
                 .OrderBy(x => x.Order)
                 .GetEnumerator();
 
-            while (enumerator.MoveNext() && !_ct.IsCancellationRequested)
+            while (enumerator.MoveNext() && !ct.IsCancellationRequested)
             {
                 var interruption = enumerator.Current;
                 if (interruption == null)
