@@ -101,15 +101,6 @@ namespace Flow.Core
             
             MonitorRunningInterruptions().Forget();
         }
-        
-        private async UniTask MonitorRunningInterruptions()
-        {
-            while (State == GameState.Running && !_linkedCts.IsCancellationRequested)
-            {
-                await PlayInterruptionsAsync(GameState.Running, _linkedCts.Token);
-                await UniTask.Yield(PlayerLoopTiming.Update);
-            }
-        }
 
         private void FixedUpdate()
         {
@@ -130,6 +121,15 @@ namespace Flow.Core
         }
 
         private bool EnableUpdate() => State == GameState.Running && _currentInterruption == null;
+        
+        private async UniTask MonitorRunningInterruptions()
+        {
+            while (State == GameState.Running && !_linkedCts.IsCancellationRequested)
+            {
+                await PlayInterruptionsAsync(GameState.Running, _linkedCts.Token);
+                await UniTask.Yield(PlayerLoopTiming.Update);
+            }
+        }
         
         private async UniTask PlayInterruptionsAsync(GameState state, CancellationToken ct)
         {
