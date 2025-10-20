@@ -24,6 +24,7 @@ namespace Flow.Core
 
         private CancellationToken _ct;
         private CancellationTokenSource _runningStateCts;
+        private CancellationTokenSource _linkedCts;
         
         private IInterruption _currentInterruption;
 
@@ -67,6 +68,8 @@ namespace Flow.Core
             State = GameState.Initialization;
             await PlayInterruptionsAsync(GameState.Initialization, _ct);
 
+            _runningStateCts = new CancellationTokenSource();
+            _linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_ct, _runningStateCts.Token);
             State = GameState.Running;
         }
 
@@ -92,10 +95,20 @@ namespace Flow.Core
                 return;
 
             if (_updateGroups.TryGetValue(UpdateType.Update, out var group))
+            {
                 group.Update(Time.deltaTime);
+            }
             
-            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_ct, _runningStateCts.Token);
-            PlayInterruptionsAsync(GameState.Running, linkedCts.Token).Forget();
+            MonitorRunningInterruptions().Forget();
+        }
+        
+        private async UniTask MonitorRunningInterruptions()
+        {
+            while (State == GameState.Running && !_linkedCts.IsCancellationRequested)
+            {
+                await PlayInterruptionsAsync(GameState.Running, _linkedCts.Token);
+                await UniTask.Yield(PlayerLoopTiming.Update);
+            }
         }
 
         private void FixedUpdate()
@@ -104,7 +117,7 @@ namespace Flow.Core
                 return;
 
             if (_updateGroups.TryGetValue(UpdateType.FixedUpdate, out var group))
-                group.Update(Time.deltaTime);
+                group.Update(Time.fixedDeltaTime);
         }
 
         private void LateUpdate()

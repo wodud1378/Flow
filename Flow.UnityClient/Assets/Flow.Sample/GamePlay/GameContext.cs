@@ -6,6 +6,8 @@ namespace Flow.Sample.GamePlay
 {
     public class GameContext : IGameContext
     {
+        public float TimeElapsed { get; }
+
         public IGameResult GetResult()
         {
             throw new NotImplementedException();

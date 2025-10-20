@@ -12,9 +12,6 @@ namespace Flow.Core.Updates
         
         public abstract UpdateType UpdateType { get; }
         
-        public float DeltaTime { get; private set; }
-        public float Time { get; private set; }
-        
         private readonly List<IUpdate> _systems;
 
         protected BaseUpdateGroup(IEnumerable<IUpdate> systems)
@@ -28,14 +25,18 @@ namespace Flow.Core.Updates
 
         public void Update(float deltaTime)
         {
-            DeltaTime = deltaTime;
-            Time += deltaTime;
             OnUpdate(deltaTime);
         }
         
         protected virtual void OnUpdate(float deltaTime)
         {
-            _systems.ForEach(system => system.Update(deltaTime));
+            foreach (var system in _systems)
+            {
+                if (!system.Enabled)
+                    return;
+                
+                system.Update(deltaTime);
+            }
         }
     }
 }
