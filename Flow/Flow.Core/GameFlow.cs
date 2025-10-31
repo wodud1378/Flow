@@ -94,10 +94,11 @@ namespace Flow.Core
             if (!EnableUpdate())
                 return;
 
+            var deltaTime = Time.deltaTime;
             if (_updateGroups.TryGetValue(UpdateType.Update, out var group))
-            {
-                group.Update(Time.deltaTime);
-            }
+                group.Update(deltaTime);
+
+            _context.TimeElapsed += deltaTime;
             
             MonitorRunningInterruptions().Forget();
         }

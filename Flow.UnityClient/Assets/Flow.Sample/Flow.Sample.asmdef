@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Flow.Core",
-        "VContainer"
+        "VContainer",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

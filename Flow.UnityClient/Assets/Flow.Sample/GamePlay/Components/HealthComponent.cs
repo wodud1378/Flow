@@ -1,51 +1,30 @@
-using System;
+using Flow.Sample.Entities;
+using Flow.Sample.GamePlay.Components.Interfaces;
 using UnityEngine;
 
 namespace Flow.Sample.GamePlay.Components
 {
     public class HealthComponent : MonoBehaviour, IComponent
     {
-        [SerializeField] private float maxHealth = 100f;
-        [SerializeField] private float currentHealth;
+        [field:SerializeField] private float health;
         
-        public float MaxHealth => maxHealth;
-        public float CurrentHealth => currentHealth;
-        public float HealthPercentage => currentHealth / maxHealth;
-        public bool IsAlive => currentHealth > 0;
+        public BaseEntity Owner { get; private set; }
+        public float Health { get; private set; }
         
-        public event Action<float> OnHealthChanged;
-        public event Action OnDeath;
-        
-        private void Awake()
+        public void Initialize(BaseEntity owner)
         {
-            currentHealth = maxHealth;
+            Owner = owner;
+            Health = health;
         }
         
-        public void TakeDamage(float damage)
+        public void Increase(float value)
         {
-            if (!IsAlive) return;
-            
-            currentHealth = Mathf.Max(0, currentHealth - damage);
-            OnHealthChanged?.Invoke(currentHealth);
-            
-            if (currentHealth <= 0)
-            {
-                OnDeath?.Invoke();
-            }
+            Health += value;
         }
         
-        public void Heal(float amount)
+        public void Decrease(float value)
         {
-            if (!IsAlive) return;
-            
-            currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-            OnHealthChanged?.Invoke(currentHealth);
-        }
-        
-        public void SetMaxHealth(float newMaxHealth)
-        {
-            maxHealth = newMaxHealth;
-            currentHealth = Mathf.Min(currentHealth, maxHealth);
+            Health = Mathf.Max(0, Health - value);
         }
     }
 }

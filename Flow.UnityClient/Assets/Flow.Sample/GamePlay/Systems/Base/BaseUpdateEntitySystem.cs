@@ -4,7 +4,7 @@ using Flow.Sample.Entities.Interfaces;
 
 namespace Flow.Sample.GamePlay.Systems.Base
 {
-    public abstract class BaseUpdateEntitySystem : BaseSystem
+    public abstract class BaseUpdateEntitySystem : BaseUpdateSystem
     {
         public const int DefaultBufferSize = 32;
         
