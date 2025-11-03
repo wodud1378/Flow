@@ -1,24 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Flow.Sample.Entities;
-using Flow.Sample.Entities.Interfaces;
-using Flow.Sample.GamePlay.Components;
 using Flow.Sample.GamePlay.Components.Interfaces;
-using Flow.Sample.GamePlay.Systems.Base;
+using Flow.Sample.GamePlay.Systems.Interfaces;
 using UnityEngine;
 
 namespace Flow.Sample.GamePlay.Systems
 {
-    public class ComponentCacheSystem : BaseUpdateEntitySystem, IComponentProvider
+    public class ComponentCacheSystem : IComponentProvider
     {
         private readonly Dictionary<GameObject, Dictionary<Type, Component>> _componentCache = new();
         private readonly Dictionary<BaseEntity, Dictionary<Type, IComponent>> _entityCache = new();
-
-        protected override Type[] EntityFilter => null;
-
-        public ComponentCacheSystem(IEntityContainer entityContainer) : base(entityContainer, 256)
-        {
-        }
 
         public T GetComponent<T>(GameObject obj) where T : Component
         {
@@ -53,11 +45,11 @@ namespace Flow.Sample.GamePlay.Systems
                 components = new Dictionary<Type, IComponent>();
                 _entityCache[entity] = components;
             }
-            
+
             var type = typeof(T);
             if (!components.TryGetValue(type, out var component))
             {
-                if (entity.TryGetComponent(out component))
+                if (entity.gameObject.TryGetComponent(out component))
                 {
                     components[type] = component;
                 }
@@ -82,13 +74,18 @@ namespace Flow.Sample.GamePlay.Systems
 
             return components;
         }
-
-        protected override void OnUpdateEntity(BaseEntity baseEntity, int index, float deltaTime)
+        
+        public TComponent[] GetComponents<T, TComponent>(T entity) where T : BaseEntity where TComponent : class, IComponent
         {
-            if (baseEntity.DestroyTriggered)
-                return;
+            var components = entity.GetComponents<TComponent>();
+            foreach (var component in components)
+            {
+                _entityCache[entity][component.GetType()] = component;
+            }
 
-            _componentCache.Remove(baseEntity.gameObject);
+            return components;
         }
+
+        public void Clear(BaseEntity entity) => _componentCache.Remove(entity.gameObject);
     }
 }

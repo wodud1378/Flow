@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Flow.Sample.GamePlay.Systems.Models;
 using UnityEngine;
+using VContainer;
 
 namespace Flow.Sample.GamePlay.Systems
 {
@@ -15,6 +16,7 @@ namespace Flow.Sample.GamePlay.Systems
 
         public int BufferSize { get; set; }
 
+        [Inject]
         public DetectSystem(ComponentCacheSystem cache, int bufferSize = 32)
         {
             _cache = cache;

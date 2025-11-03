@@ -1,7 +1,8 @@
 using Flow.Sample.Entities;
+using Flow.Sample.GamePlay.Components.Interfaces;
 using UnityEngine;
 
-namespace Flow.Sample.GamePlay.Components.Interfaces
+namespace Flow.Sample.GamePlay.Systems.Interfaces
 {
     public interface IComponentProvider
     {
@@ -11,5 +12,8 @@ namespace Flow.Sample.GamePlay.Components.Interfaces
         public T GetComponent<T>(BaseEntity entity) where T : class, IComponent;
         public bool TryGetComponent<T>(BaseEntity entity, out T component) where T : class, IComponent;
         public IComponent[] GetComponents<T>(T entity) where T : BaseEntity;
+
+        public TComponent[] GetComponents<T, TComponent>(T entity)
+            where T : BaseEntity where TComponent : class, IComponent;
     }
 }
