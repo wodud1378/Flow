@@ -1,27 +1,26 @@
 using System;
 using System.Collections.Generic;
+using Flow.Sample.Logic.Interfaces;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Flow.Sample.Logic
 {
-    public class ObjectPool<T> where T : MonoBehaviour
+    public class ObjectPool<T> where T : IPoolItem
     {
-        public event Action<T> OnBeforeActive;
-        
+        private readonly Func<T> _createInstance;
         private readonly List<T> _activated = new();
         private readonly List<T> _spares = new();
-        
+
         private readonly GameObject _prefab;
 
         private bool HasSpare => _spares.Count > 0;
-        
-        public ObjectPool(GameObject prefab)
+
+        public ObjectPool(Func<T> createInstance)
         {
-            _prefab = prefab;
+            _createInstance = createInstance;
         }
 
-        public T Get(Vector2 position = default)
+        public T Get(Action<T> onBeforeActive = null)
         {
             T obj;
             if (HasSpare)
@@ -31,14 +30,12 @@ namespace Flow.Sample.Logic
             }
             else
             {
-                var go = Object.Instantiate(_prefab);
-                obj = go.GetComponent<T>();
+                obj = _createInstance.Invoke();
             }
 
-            OnBeforeActive?.Invoke(obj);
+            onBeforeActive?.Invoke(obj);
             
-            obj.transform.position = position;
-            obj.gameObject.SetActive(true);
+            obj.Activate();
             _activated.Add(obj);
 
             return obj;
@@ -46,8 +43,8 @@ namespace Flow.Sample.Logic
 
         public void Release(T obj)
         {
-            obj.gameObject.SetActive(false);
-            
+            obj.Deactivate();
+
             _activated.Remove(obj);
             _spares.Add(obj);
         }

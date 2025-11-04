@@ -4,7 +4,8 @@
     "references": [
         "Flow.Core",
         "VContainer",
-        "UniTask"
+        "UniTask",
+        "R3.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

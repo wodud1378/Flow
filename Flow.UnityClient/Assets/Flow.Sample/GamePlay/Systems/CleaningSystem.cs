@@ -15,15 +15,15 @@ namespace Flow.Sample.GamePlay.Systems
         private readonly Queue<BaseEntity> _queue = new();
         private readonly Queue<BaseEntity> _destroyQueue = new();
         private readonly IEntityContainer _entityContainer;
-        private readonly PoolSystem _pool;
+        private readonly EntityPoolSystem _entityPool;
         private readonly ComponentCacheSystem _componentCache;
 
         [Inject]
-        public CleaningSystem(IEntityContainer entityContainer, PoolSystem pool, ComponentCacheSystem componentCache) : base(
+        public CleaningSystem(IEntityContainer entityContainer, EntityPoolSystem entityPool, ComponentCacheSystem componentCache) : base(
             entityContainer, componentCache, 256)
         {
             _entityContainer = entityContainer;
-            _pool = pool;
+            _entityPool = entityPool;
             _componentCache = componentCache;
         }
 
@@ -40,7 +40,7 @@ namespace Flow.Sample.GamePlay.Systems
                 
                 _componentCache.Clear(entity);
                 _destroyQueue.Enqueue(entity);
-                _pool.Destroy(entity);
+                _entityPool.Destroy(entity);
             }
             
             DestroyLazy();

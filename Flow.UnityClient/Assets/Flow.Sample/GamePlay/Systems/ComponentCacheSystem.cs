@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Flow.Sample.Entities;
 using Flow.Sample.GamePlay.Components.Interfaces;
 using Flow.Sample.GamePlay.Systems.Interfaces;
@@ -12,6 +13,7 @@ namespace Flow.Sample.GamePlay.Systems
         private readonly Dictionary<GameObject, Dictionary<Type, Component>> _componentCache = new();
         private readonly Dictionary<BaseEntity, Dictionary<Type, IComponent>> _entityCache = new();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetComponent<T>(GameObject obj) where T : Component
         {
             if (!_componentCache.TryGetValue(obj, out var components))
@@ -32,12 +34,14 @@ namespace Flow.Sample.GamePlay.Systems
             return (T)component;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetComponent<T>(GameObject obj, out T component) where T : Component
         {
             component = GetComponent<T>(obj);
             return component != null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T GetComponent<T>(BaseEntity entity) where T : class, IComponent
         {
             if (!_entityCache.TryGetValue(entity, out var components))
@@ -58,12 +62,14 @@ namespace Flow.Sample.GamePlay.Systems
             return (T)component;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetComponent<T>(BaseEntity entity, out T component) where T : class, IComponent
         {
             component = GetComponent<T>(entity);
             return component != null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IComponent[] GetComponents<T>(T entity) where T : BaseEntity
         {
             var components = entity.GetComponents<IComponent>();
@@ -75,6 +81,7 @@ namespace Flow.Sample.GamePlay.Systems
             return components;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TComponent[] GetComponents<T, TComponent>(T entity) where T : BaseEntity where TComponent : class, IComponent
         {
             var components = entity.GetComponents<TComponent>();

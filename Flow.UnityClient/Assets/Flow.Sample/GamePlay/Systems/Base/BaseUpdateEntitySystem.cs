@@ -9,8 +9,6 @@ namespace Flow.Sample.GamePlay.Systems.Base
 {
     public abstract class BaseUpdateEntitySystem : BaseUpdateSystem
     {
-        public const int DefaultBufferSize = 32;
-        
         protected abstract Type[] EntityFilter { get; }
         
         private readonly IEntityContainer _entityContainer;
@@ -20,7 +18,7 @@ namespace Flow.Sample.GamePlay.Systems.Base
         protected BaseUpdateEntitySystem(
             IEntityContainer entityContainer,
             IComponentProvider componentCache,
-            int bufferSize = DefaultBufferSize)
+            int bufferSize)
         {
             _entityContainer = entityContainer;
             _componentCache = componentCache;

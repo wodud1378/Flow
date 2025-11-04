@@ -1,17 +1,20 @@
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using Flow.Sample.GamePlay.Components.Interfaces;
 using Flow.Sample.GamePlay.Systems.Interfaces;
+using Flow.Sample.Logic.Interfaces;
 using UnityEngine;
 
 namespace Flow.Sample.Entities
 {
-    public abstract class BaseEntity : MonoBehaviour
+    public abstract class BaseEntity : MonoBehaviour, IPoolItem
     {
         public int Id { get; private set; }
         public bool IsValid { get; private set; }
 
         public bool DestroyTriggered { get; private set; }
+        
+        public GameObject Origin { get; set; }
+        public bool IsActive => gameObject.activeSelf;
 
         private CancellationToken _lifeTimeCt;
         private IComponentProvider _componentProvider;
@@ -43,12 +46,16 @@ namespace Flow.Sample.Entities
 
         public IComponent[] GetComponents() => _componentProvider?.GetComponents(this) ?? GetComponents<IComponent>();
         
-        public TComponent[] GetComponents<TComponent>() where TComponent : class, IComponent =>
+        public new TComponent[] GetComponents<TComponent>() where TComponent : class, IComponent =>
             _componentProvider?.GetComponents<BaseEntity, TComponent>(this) ?? base.GetComponents<TComponent>();
             
 
         public void DestroySelf() => DestroyTriggered = true;
 
         public void CancelDestroySelf() => DestroyTriggered = false;
+
+        public virtual void Activate() => gameObject.SetActive(true);
+
+        public virtual void Deactivate() => gameObject.SetActive(false);
     }
 }

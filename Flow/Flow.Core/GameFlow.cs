@@ -98,8 +98,6 @@ namespace Flow.Core
             if (_updateGroups.TryGetValue(UpdateType.Update, out var group))
                 group.Update(deltaTime);
 
-            _context.TimeElapsed += deltaTime;
-            
             MonitorRunningInterruptions().Forget();
         }
 
