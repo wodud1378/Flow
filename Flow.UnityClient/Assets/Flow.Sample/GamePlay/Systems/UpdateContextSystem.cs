@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Flow.Sample.GamePlay.Events;
 using Flow.Sample.GamePlay.Models;
 using Flow.Sample.GamePlay.Systems.Base;
+using R3;
 using VContainer;
 
 namespace Flow.Sample.GamePlay.Systems
@@ -8,43 +11,44 @@ namespace Flow.Sample.GamePlay.Systems
     public class UpdateContextSystem : BaseUpdateSystem
     {
         private readonly GameContext _context;
-        private readonly GameEvents _events;
+        private readonly IDisposable _disposable;
+        private readonly Queue<Action> _updateActions = new();
 
         private Metrics? _pendingMetrics;
         private Wave? _pendingWave;
-        
+
         [Inject]
         public UpdateContextSystem(GameContext context, GameEvents events)
         {
             _context = context;
-            _events = events;
+            _disposable = Disposable.Combine(
+                events.OnTimeUpdated.Subscribe(OnTimeUpdated),
+                events.OnWaveUpdated.Subscribe(OnWaveUpdated),
+                events.OnMeticsUpdated.Subscribe(OnMeticsUpdated)
+            );
         }
-        
+
+        ~UpdateContextSystem()
+        {
+            _disposable.Dispose();
+        }
+
+        #region Event Callbacks
+
+        private void OnTimeUpdated(float deltaTime) => _updateActions.Enqueue(() => _context.TimeElapsed += deltaTime);
+
+        private void OnWaveUpdated(Wave wave) => _updateActions.Enqueue(() => _context.Wave = wave);
+
+        private void OnMeticsUpdated(Metrics metrics) => _updateActions.Enqueue(() => _context.Metrics = metrics);
+
+        #endregion
+
         protected override void OnUpdate(float deltaTime)
         {
-            UpdateContext(deltaTime);
-        }
-
-        private void UpdateContext(float deltaTime)
-        {
-            if (_pendingMetrics.HasValue)
+            while (_updateActions.Count > 0)
             {
-                _context.Metrics = _pendingMetrics.Value;
-                _events.MeticsUpdatedStream.OnNext(_context.Metrics);
-                
-                _pendingMetrics = null;
+                _updateActions.Dequeue()?.Invoke();
             }
-
-            if (_pendingWave.HasValue)
-            {
-                _context.Wave = _pendingWave.Value;
-                _events.WaveChangedStream.OnNext(_context.Wave);
-                
-                _pendingWave = null;
-            }
-            
-            _context.TimeElapsed += deltaTime;
-            _events.TimeUpdatedStream.OnNext(_context.TimeElapsed);
         }
     }
 }

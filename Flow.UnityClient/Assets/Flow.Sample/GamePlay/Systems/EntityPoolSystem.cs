@@ -10,7 +10,6 @@ namespace Flow.Sample.GamePlay.Systems
     public class EntityPoolSystem
     {
         private readonly Dictionary<object, object> _pools = new();
-        private readonly Dictionary<object, object> _accessors = new();
         
         public T GetObject<T>(T prefab, Action<T> onBeforeActive = null) where T : BaseEntity
         {

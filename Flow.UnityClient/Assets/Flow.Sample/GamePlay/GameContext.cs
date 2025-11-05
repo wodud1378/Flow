@@ -11,7 +11,7 @@ namespace Flow.Sample.GamePlay
         public bool Win { get; set; }
         
         public float TimeElapsed { get; set; }
-
+        
         public IGameResult GetResult() => new GameResult(Metrics, Wave, Win);
     }
 }

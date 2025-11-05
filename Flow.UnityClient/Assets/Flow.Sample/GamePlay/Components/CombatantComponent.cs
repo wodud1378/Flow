@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Flow.Sample.Entities;
 using Flow.Sample.GamePlay.Components.Interfaces;
@@ -11,16 +12,19 @@ namespace Flow.Sample.GamePlay.Components
     {
         public IReadOnlyList<IAttack> Attacks => _attacks;
         
-        public BaseEntity Owner { get; private set; }
-        public StatusComponent Status { get; private set; }
+        [field:SerializeField] public BaseEntity Owner { get; private set; }
+        [field:SerializeField] public StatusComponent Status { get; private set; }
         public bool IsAlive => Status.RemainHp > 0;
         
         private readonly List<IAttack> _attacks = new();
-        
-        public void Initialize(BaseEntity owner, StatusComponent status)
+
+        private void OnValidate()
         {
-            Owner = owner;
-            Status = status;
+            if(Owner == null)
+                Owner = GetComponent<BaseEntity>();
+            
+            if(Status == null)
+                Status = GetComponent<StatusComponent>();
         }
 
         public void AddAttack(IAttack attack) => _attacks.Add(attack);

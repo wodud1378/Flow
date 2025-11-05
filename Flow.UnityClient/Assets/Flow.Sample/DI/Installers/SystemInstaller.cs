@@ -15,6 +15,7 @@ namespace Flow.Sample.DI.Installers
             builder.Register<CleaningSystem>(lifetime);
             builder.Register<UpdateContextSystem>(lifetime);
             builder.Register<WaveSystem>(lifetime);
+            builder.Register<MoveOnPathSystem>(lifetime);
         }
         
         public static void InstallCombatSystems(this IContainerBuilder builder, IBufferConfig bufferConfig)

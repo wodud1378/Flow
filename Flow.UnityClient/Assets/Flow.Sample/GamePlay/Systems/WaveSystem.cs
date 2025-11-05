@@ -1,5 +1,6 @@
-using Flow.Sample.Entities;
 using Flow.Sample.Entities.Interfaces;
+using Flow.Sample.GamePlay.Events;
+using Flow.Sample.GamePlay.Models;
 using Flow.Sample.GamePlay.Systems.Base;
 using Flow.Sample.GamePlay.Systems.Interfaces;
 using Flow.Sample.GamePlay.Systems.Models;
@@ -11,42 +12,58 @@ namespace Flow.Sample.GamePlay.Systems
     {
         private readonly IEnemyWaveProvider _waveProvider;
         private readonly IEntityContainer _entityContainer;
-        private readonly UpdateContextSystem _updateContext;
+        private readonly GameEvents _events;
         private readonly EntityPoolSystem _entityPool;
 
-        private EnemyWave _currentWave;
+        private Wave _wave;
+        
+        private EnemyWave _enemyWave;
         private int _spawnedCount;
-        private float _spawnIntervalElpased;
+        private float _spawnIntervalElapsed;
         private float _timeForNextElapsed;
 
         [Inject]
         public WaveSystem(IEnemyWaveProvider waveProvider,
             IEntityContainer entityContainer,
-            UpdateContextSystem updateContext,
+            GameEvents events,
             EntityPoolSystem entityPool)
         {
+            _wave = new Wave(0, 0, 0);
+            
             _waveProvider = waveProvider;
             _entityContainer = entityContainer;
-            _updateContext = updateContext;
+            _events = events;
             _entityPool = entityPool;
+        }
+
+        protected override void OnStartRunning()
+        {
+            ChangeWave(_waveProvider.Next());
         }
 
         protected override void OnUpdate(float deltaTime)
         {
+            UpdateWave(deltaTime);
         }
 
         private void ChangeWave(EnemyWave wave)
         {
-            _currentWave = wave;
+            ++_wave.Number;
+            _wave.EnemyKilled = 0;
+            _wave.TimeSinceStart = 0;
+            _events.WaveUpdateStream.OnNext(_wave);
+            
+            _enemyWave = wave;
             _spawnedCount = 0;
-            _spawnIntervalElpased = 0f;
+            _spawnIntervalElapsed = 0f;
             _timeForNextElapsed = 0f;
         }
 
         private void UpdateWave(float deltaTime)
         {
-            if (_spawnedCount < _currentWave.MonsterCount)
+            if (_spawnedCount < _enemyWave.MonsterCount)
             {
+                UpdateSpawn(deltaTime);
             }
             else
             {
@@ -56,22 +73,26 @@ namespace Flow.Sample.GamePlay.Systems
 
         private void UpdateSpawn(float deltaTime)
         {
-            _spawnIntervalElpased += deltaTime;
-            if (_spawnIntervalElpased < _currentWave.SpawnInterval)
+            _spawnIntervalElapsed += deltaTime;
+            if (_spawnIntervalElapsed < _enemyWave.SpawnInterval)
                 return;
 
-            var enemy = _entityPool.GetObject(_currentWave.Prefab);
+            var enemy = _entityPool.GetObject(_enemyWave.Prefab);
             _entityContainer.Register(enemy);
+            ++_spawnedCount;
         }
 
         private void OnAllEnemySpawned(float deltaTime)
         {
             _timeForNextElapsed += deltaTime;
-            if (_timeForNextElapsed < _currentWave.TimeForNext)
+            if (_timeForNextElapsed < _enemyWave.TimeForNext)
                 return;
 
             if (_waveProvider.IsLastWave())
+            {
+                Enabled = false;
                 return;
+            }
             
             ChangeWave(_waveProvider.Next());
         }

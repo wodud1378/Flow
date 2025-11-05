@@ -37,7 +37,7 @@ namespace Flow.Sample.GamePlay.Systems
 
         protected override void OnUpdateEntity(BaseEntity entity, int index, float deltaTime)
         {
-            var combatant = entity.GetComponent<CombatantComponent>();
+            var combatant = As<CombatantComponent>(entity);
             if (!combatant.IsAlive)
                 return;
             
@@ -57,7 +57,7 @@ namespace Flow.Sample.GamePlay.Systems
 
         public void ApplyDamage(BaseEntity attacker, BaseEntity victim)
         {
-            var damage = CalculateDamage(attacker.GetComponent<CombatantComponent>().Status);
+            var damage = CalculateDamage(As<StatusComponent>(attacker));
             ApplyDamage(attacker, victim, damage);
         }
 
@@ -79,8 +79,8 @@ namespace Flow.Sample.GamePlay.Systems
                 combatant = null;
                 return false;
             }
-            
-            combatant = entity.GetComponent<CombatantComponent>();
+
+            combatant = As<CombatantComponent>(entity);
             return combatant != null && combatant.IsAlive;
         }
 
