@@ -19,7 +19,7 @@ namespace Flow.Sample.GamePlay.Systems
         protected override Type[] EntityFilter { get; } = { typeof(CombatantComponent) };
 
         private readonly DamageCalculator _damageCalculator;
-        private readonly GameEvents _events;
+        private readonly CombatEvents _events;
         private readonly Queue<AttackContext> _contextPool;
 
         [Inject]
@@ -27,9 +27,9 @@ namespace Flow.Sample.GamePlay.Systems
             IEntityContainer entityContainer,
             IComponentProvider componentCache,
             DamageCalculator damageCalculator,
-            GameEvents events,
-            IBufferConfig bufferConfig)
-            : base(entityContainer, componentCache, bufferConfig.UpdateEntitySystemBufferSize)
+            CombatEvents events,
+            IConfig config)
+            : base(entityContainer, componentCache, config.UpdateEntitySystemBufferSize)
         {
             _damageCalculator = damageCalculator;
             _events = events;

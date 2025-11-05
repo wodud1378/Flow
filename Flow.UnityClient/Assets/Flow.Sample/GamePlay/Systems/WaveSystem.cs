@@ -11,9 +11,8 @@ namespace Flow.Sample.GamePlay.Systems
     public class WaveSystem : BaseUpdateSystem
     {
         private readonly IEnemyWaveProvider _waveProvider;
-        private readonly IEntityContainer _entityContainer;
-        private readonly GameEvents _events;
-        private readonly EntityPoolSystem _entityPool;
+        private readonly EnemySpawnSystem _spawnSystem;
+        private readonly PlayerEvents _events;
 
         private Wave _wave;
         
@@ -25,15 +24,14 @@ namespace Flow.Sample.GamePlay.Systems
         [Inject]
         public WaveSystem(IEnemyWaveProvider waveProvider,
             IEntityContainer entityContainer,
-            GameEvents events,
-            EntityPoolSystem entityPool)
+            EnemySpawnSystem spawnSystem,
+            PlayerEvents events)
         {
             _wave = new Wave(0, 0, 0);
             
             _waveProvider = waveProvider;
-            _entityContainer = entityContainer;
             _events = events;
-            _entityPool = entityPool;
+            _spawnSystem = spawnSystem;
         }
 
         protected override void OnStartRunning()
@@ -77,8 +75,7 @@ namespace Flow.Sample.GamePlay.Systems
             if (_spawnIntervalElapsed < _enemyWave.SpawnInterval)
                 return;
 
-            var enemy = _entityPool.GetObject(_enemyWave.Prefab);
-            _entityContainer.Register(enemy);
+            _spawnSystem.RequestSpawn(_enemyWave.Prefab);
             ++_spawnedCount;
         }
 

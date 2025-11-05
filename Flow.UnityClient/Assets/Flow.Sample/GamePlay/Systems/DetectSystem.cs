@@ -18,10 +18,10 @@ namespace Flow.Sample.GamePlay.Systems
         public int BufferSize { get; set; }
 
         [Inject]
-        public DetectSystem(ComponentCacheSystem cache, IBufferConfig bufferConfig)
+        public DetectSystem(ComponentCacheSystem cache, IConfig config)
         {
             _cache = cache;
-            BufferSize = bufferConfig.DetectBufferSize;
+            BufferSize = config.DetectBufferSize;
         }
 
         public DetectScope Detect(IDetectParams param)

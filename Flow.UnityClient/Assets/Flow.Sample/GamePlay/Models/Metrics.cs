@@ -1,25 +1,25 @@
 namespace Flow.Sample.GamePlay.Models
 {
-    public readonly struct Metrics
+    public struct Metrics
     {
-        public readonly int Gold;
-        public readonly int Lives;
-        public readonly int Score;
+        public int Hp;
+        public int Gold;
+        public int Score;
 
-        public Metrics(int gold, int lives, int score)
+        public Metrics(int hp, int gold, int score)
         {
             Gold = gold;
-            Lives = lives;
             Score = score;
+            Hp = hp;
         }
 
         public Metrics Copy(
+            int? hp = null,
             int? gold = null,
-            int? lives = null,
             int? score = null) =>
             new(
+                hp ?? Hp,
                 gold ?? Gold,
-                lives ?? Lives,
                 score ?? Score
             );
     }

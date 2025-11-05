@@ -18,13 +18,13 @@ namespace Flow.Sample.GamePlay.Systems
         private Wave? _pendingWave;
 
         [Inject]
-        public UpdateContextSystem(GameContext context, GameEvents events)
+        public UpdateContextSystem(GameContext context, EventChannels events)
         {
             _context = context;
             _disposable = Disposable.Combine(
-                events.OnTimeUpdated.Subscribe(OnTimeUpdated),
-                events.OnWaveUpdated.Subscribe(OnWaveUpdated),
-                events.OnMeticsUpdated.Subscribe(OnMeticsUpdated)
+                events.Game.OnTimeUpdated.Subscribe(OnTimeUpdated),
+                events.Player.OnWaveUpdated.Subscribe(OnWaveUpdated),
+                events.Player.OnMeticsUpdated.Subscribe(OnMeticsUpdated)
             );
         }
 

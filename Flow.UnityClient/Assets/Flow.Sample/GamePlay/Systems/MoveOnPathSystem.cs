@@ -17,8 +17,8 @@ namespace Flow.Sample.GamePlay.Systems
         public MoveOnPathSystem(
             IEntityContainer entityContainer,
             IComponentProvider componentCache, 
-            IBufferConfig bufferConfig) 
-            : base(entityContainer, componentCache, bufferConfig.UpdateEntitySystemBufferSize)
+            IConfig config) 
+            : base(entityContainer, componentCache, config.UpdateEntitySystemBufferSize)
         {
         }
 

@@ -6,6 +6,7 @@ namespace Flow.Sample.GamePlay
 {
     public class GameContext : IGameContext
     {
+        public int Hp { get; set; }
         public Metrics Metrics { get; set; }
         public Wave Wave { get; set; }
         public bool Win { get; set; }

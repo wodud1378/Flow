@@ -18,11 +18,11 @@ namespace Flow.Sample.DI.Installers
             builder.Register<MoveOnPathSystem>(lifetime);
         }
         
-        public static void InstallCombatSystems(this IContainerBuilder builder, IBufferConfig bufferConfig)
+        public static void InstallCombatSystems(this IContainerBuilder builder, IConfig config)
         {
             var lifetime = Lifetime.Singleton;
 
-            builder.RegisterInstance(bufferConfig);
+            builder.RegisterInstance(config);
             builder.Register<DetectSystem>(lifetime);
             builder.Register<CombatSystem>(lifetime);
         }

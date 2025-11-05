@@ -1,3 +1,5 @@
+using Flow.Sample.GamePlay.Events;
+
 namespace Flow.Sample.GamePlay.Systems.Base
 {
     public abstract class BaseUpdateSystem
