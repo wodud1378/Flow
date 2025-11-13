@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Flow.Core",
+        "Flow.Sample.Data",
         "VContainer",
         "UniTask",
         "R3.Unity"

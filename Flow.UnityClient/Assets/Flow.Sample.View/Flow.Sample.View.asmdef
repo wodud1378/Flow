@@ -4,6 +4,7 @@
     "references": [
         "Flow.Core",
         "Flow.Sample",
+        "Flow.Sample.Data",
         "VContainer"
     ],
     "includePlatforms": [],
