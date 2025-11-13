@@ -7,23 +7,28 @@ namespace Flow.Sample.GamePlay.Contents.Attack
 {
     public class AttackContext
     {
-        private readonly CombatSystem _system;
-        private readonly Queue<BaseEntity> _targets = new();
+        public IReadOnlyList<BaseEntity> Targets => _targets;
+        public CombatantComponent Attacker { get; private set; }
 
-        public AttackContext(CombatSystem system)
+        private readonly CombatSystem _system;
+        private readonly List<BaseEntity> _targets = new();
+
+        internal AttackContext(CombatSystem system)
         {
             _system = system;
         }
 
-        public void RegisterTarget(BaseEntity target) => _targets.Enqueue(target);
+        public void SetAttacker(CombatantComponent component) => Attacker = component;
 
-        public void RunAttack(CombatantComponent combatant)
+        public void RegisterTarget(BaseEntity target) => _targets.Add(target);
+
+        public void RunAttack()
         {
-            while (_targets.Count > 0)
-            {
-                var target = _targets.Dequeue();
-                _system.ApplyDamage(combatant.Owner, target);
-            }
+            if (Attacker == null || !Attacker.Owner.IsValid)
+                return;
+            
+            _targets.ForEach(x => _system.ApplyDamage(Attacker.Owner, x));
+            _targets.Clear();
         }
 
         public void Clear()
@@ -34,8 +39,8 @@ namespace Flow.Sample.GamePlay.Contents.Attack
         public void Dispose()
         {
             Clear();
-            
-            _system.Return(this);
+
+            _system.ReturnContext(this);
         }
     }
 }

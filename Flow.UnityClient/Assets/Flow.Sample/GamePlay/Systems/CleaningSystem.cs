@@ -14,16 +14,14 @@ namespace Flow.Sample.GamePlay.Systems
 
         private readonly Queue<BaseEntity> _queue = new();
         private readonly Queue<BaseEntity> _destroyQueue = new();
-        private readonly IEntityContainer _entityContainer;
-        private readonly EntityPoolSystem _entityPool;
+        private readonly EntitySystem _entitySystem;
         private readonly ComponentCacheSystem _componentCache;
 
         [Inject]
-        public CleaningSystem(IEntityContainer entityContainer, EntityPoolSystem entityPool, ComponentCacheSystem componentCache) : base(
+        public CleaningSystem(EntitySystem entitySystem, IEntityContainer entityContainer, ComponentCacheSystem componentCache) : base(
             entityContainer, componentCache, 256)
         {
-            _entityContainer = entityContainer;
-            _entityPool = entityPool;
+            _entitySystem = entitySystem;
             _componentCache = componentCache;
         }
 
@@ -33,14 +31,11 @@ namespace Flow.Sample.GamePlay.Systems
 
             foreach (var entity in _queue)
             {
-                _entityContainer.Unregister(entity);
-
                 if (!entity.DestroyTriggered) 
                     continue;
                 
                 _componentCache.Clear(entity);
                 _destroyQueue.Enqueue(entity);
-                _entityPool.Destroy(entity);
             }
             
             DestroyLazy();
@@ -50,6 +45,9 @@ namespace Flow.Sample.GamePlay.Systems
         {
             if (!_destroyQueue.TryDequeue(out var entity))
                 return;
+
+            if (!entity.DestroyTriggered)
+                return;
             
             Object.Destroy(entity.gameObject);
         }
@@ -57,7 +55,7 @@ namespace Flow.Sample.GamePlay.Systems
         protected override void OnUpdateEntity(BaseEntity entity, int index, float deltaTime)
         {
             if (entity.DestroyTriggered && entity.IsValid)
-                entity.Invalidate();
+                _entitySystem.Invalidate(entity);
 
             if (entity.IsValid)
                 return;

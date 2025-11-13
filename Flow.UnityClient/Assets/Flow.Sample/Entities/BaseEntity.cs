@@ -12,9 +12,6 @@ namespace Flow.Sample.Entities
         public bool IsValid { get; private set; }
 
         public bool DestroyTriggered { get; private set; }
-        
-        public GameObject Origin { get; set; }
-        public bool IsActive => gameObject.activeSelf;
 
         private CancellationToken _lifeTimeCt;
         private IComponentProvider _componentProvider;
@@ -48,8 +45,7 @@ namespace Flow.Sample.Entities
         
         public new TComponent[] GetComponents<TComponent>() where TComponent : class, IComponent =>
             _componentProvider?.GetComponents<BaseEntity, TComponent>(this) ?? base.GetComponents<TComponent>();
-            
-
+        
         public void DestroySelf() => DestroyTriggered = true;
 
         public void CancelDestroySelf() => DestroyTriggered = false;

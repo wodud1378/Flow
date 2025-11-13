@@ -1,12 +1,14 @@
 using System;
+using Flow.Sample.GamePlay.Contents.Attack.Models;
 
 namespace Flow.Sample.GamePlay.Contents.Attack.Interfaces
 {
     public interface IAttackViewSync
     {
-        public event Action OnHitTiming;
-        public event Action OnEnd;
+        public event Action<AttackContext, AttackViewEvent> OnViewEvent; 
         
-        public void Play();
+        public void Play(AttackContext context);
+
+        public void ManualUpdate(float deltaTime);
     }
 }

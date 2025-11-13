@@ -10,7 +10,7 @@ namespace Flow.Sample.DI.Installers
         {
             var lifetime = Lifetime.Singleton;
             
-            builder.Register<EntityPoolSystem>(lifetime);
+            builder.Register<PoolSystem>(lifetime);
             builder.Register<ComponentCacheSystem>(lifetime);
             builder.Register<CleaningSystem>(lifetime);
             builder.Register<UpdateContextSystem>(lifetime);

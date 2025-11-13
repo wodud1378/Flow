@@ -12,11 +12,10 @@ namespace Flow.Sample.GamePlay.Systems
 {
     public class EnemySpawnSystem : BaseUpdateSystem
     {
-        private readonly IEntityContainer _entityContainer;
         private readonly IMovePathProvider _pathProvider;
+        private readonly EntitySystem _entitySystem;
         private readonly int _spawnLimitPerFrame;
         
-        private readonly EntityPoolSystem _pool;
         private readonly EnemyEvents _events;
         private readonly Queue<EnemyEntity> _request = new();
         
@@ -24,16 +23,14 @@ namespace Flow.Sample.GamePlay.Systems
 
         [Inject]
         public EnemySpawnSystem(
-            IEntityContainer entityContainer, 
             IMovePathProvider pathProvider, 
             IConfig config, 
-            EntityPoolSystem pool,
+            EntitySystem entitySystem,
             EnemyEvents events)
         {
-            _entityContainer = entityContainer;
             _pathProvider = pathProvider;
+            _entitySystem = entitySystem;
             _spawnLimitPerFrame = config.EnemySpawnLimitPerFrame;
-            _pool = pool;
             _events = events;
         }
 
@@ -45,11 +42,10 @@ namespace Flow.Sample.GamePlay.Systems
             while (_request.Count > 0 && _spawnCount < _spawnLimitPerFrame)
             {
                 var prefab = _request.Dequeue();
-                var entity = _pool.GetObject(prefab);
+                var entity = _entitySystem.New(prefab);
                 var move = entity.GetComponent<MoveOnPathComponent>();
                 move.Initialize(_pathProvider.Provide());
                 
-                _entityContainer.Register(entity);
                 _events.EnemySpawnedStream.OnNext(entity);
                 
                 ++_spawnCount;

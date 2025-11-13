@@ -10,32 +10,35 @@ namespace Flow.Sample.GamePlay.Systems
 {
     public class ComponentCacheSystem : IComponentProvider
     {
-        private readonly Dictionary<GameObject, Dictionary<Type, Component>> _componentCache = new();
+        private readonly Dictionary<GameObject, Dictionary<Type, object>> _componentCache = new();
         private readonly Dictionary<BaseEntity, Dictionary<Type, IComponent>> _entityCache = new();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetComponent<T>(GameObject obj) where T : Component
+        public T GetComponent<T>(GameObject gameObject)
         {
-            if (!_componentCache.TryGetValue(obj, out var components))
+            if (!_componentCache.TryGetValue(gameObject, out var components))
             {
-                components = new Dictionary<Type, Component>();
-                _componentCache[obj] = components;
+                components = new Dictionary<Type, object>();
+                _componentCache[gameObject] = components;
             }
 
             var type = typeof(T);
-            if (!components.TryGetValue(type, out var component))
+            T component;
+            if (!components.TryGetValue(type, out var obj))
             {
-                if (obj.TryGetComponent(type, out component))
+                if (gameObject.TryGetComponent(out component))
                 {
                     components[type] = component;
                 }
             }
+            else
+                component = (T)obj;
 
-            return (T)component;
+            return component;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetComponent<T>(GameObject obj, out T component) where T : Component
+        public bool TryGetComponent<T>(GameObject obj, out T component)
         {
             component = GetComponent<T>(obj);
             return component != null;

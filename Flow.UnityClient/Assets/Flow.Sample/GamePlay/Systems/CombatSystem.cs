@@ -47,7 +47,7 @@ namespace Flow.Sample.GamePlay.Systems
                 if (!attack.CanExecute())
                     continue;
 
-                var context = GetAttackContext();
+                var context = GetAttackContext(combatant);
                 attack.Execute(context);
             }
         }
@@ -84,14 +84,15 @@ namespace Flow.Sample.GamePlay.Systems
             return combatant != null && combatant.IsAlive;
         }
 
-        private AttackContext GetAttackContext()
+        private AttackContext GetAttackContext(CombatantComponent attacker)
         {
             var context = _contextPool.Count > 0 ? _contextPool.Dequeue() : new AttackContext(this);
             context.Clear();
+            context.SetAttacker(attacker);
             
             return context;
         }
         
-        public void Return(AttackContext context) => _contextPool.Enqueue(context);
+        public void ReturnContext(AttackContext context) => _contextPool.Enqueue(context);
     }
 }

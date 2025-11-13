@@ -6,8 +6,8 @@ namespace Flow.Sample.GamePlay.Systems.Interfaces
 {
     public interface IComponentProvider
     {
-        public T GetComponent<T>(GameObject obj) where T : Component;
-        public bool TryGetComponent<T>(GameObject obj, out T component) where T : Component;
+        public T GetComponent<T>(GameObject gameObject);
+        public bool TryGetComponent<T>(GameObject obj, out T component);
 
         public T GetComponent<T>(BaseEntity entity) where T : class, IComponent;
         public bool TryGetComponent<T>(BaseEntity entity, out T component) where T : class, IComponent;
