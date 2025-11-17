@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Flow.Sample.Entities
+namespace Flow.Sample.GamePlay.Entities
 {
     public class EntityIdGenerator
     {

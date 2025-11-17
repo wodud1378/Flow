@@ -1,7 +1,8 @@
+using Flow.Sample.Entities;
 using Flow.Sample.GamePlay.Components;
 using UnityEngine;
 
-namespace Flow.Sample.Entities
+namespace Flow.Sample.GamePlay.Entities
 {
     [RequireComponent(typeof(CombatantComponent))]
     public class TowerEntity : BaseEntity

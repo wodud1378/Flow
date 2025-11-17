@@ -1,7 +1,7 @@
 using Flow.Sample.GamePlay.Components;
 using UnityEngine;
 
-namespace Flow.Sample.Entities
+namespace Flow.Sample.GamePlay.Entities
 {
     [RequireComponent(typeof(MoveOnPathComponent), typeof(CombatantComponent), typeof(StatusComponent))]
     public class EnemyEntity : BaseEntity

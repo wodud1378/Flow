@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Flow.Sample.Entities.Interfaces;
-using Flow.Sample.GamePlay.Components;
 using Flow.Sample.GamePlay.Components.Interfaces;
+using Flow.Sample.GamePlay.Entities.Interfaces;
 using Flow.Sample.GamePlay.Systems.Interfaces;
 using UnityEngine;
 
-namespace Flow.Sample.Entities
+namespace Flow.Sample.GamePlay.Entities
 {
     public class EntityContainer : IEntityContainer
     {

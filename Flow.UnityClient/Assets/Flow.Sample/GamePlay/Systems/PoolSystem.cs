@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Flow.Sample.Entities;
 using Flow.Sample.Logic;
 using Flow.Sample.Logic.Interfaces;
 using UnityEngine;

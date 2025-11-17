@@ -1,5 +1,5 @@
-using Flow.Sample.Entities;
 using Flow.Sample.GamePlay.Components.Interfaces;
+using Flow.Sample.GamePlay.Entities;
 using UnityEngine;
 
 namespace Flow.Sample.GamePlay.Systems.Interfaces

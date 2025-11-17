@@ -1,4 +1,4 @@
-using Flow.Sample.Entities.Interfaces;
+using Flow.Sample.GamePlay.Entities.Interfaces;
 using Flow.Sample.GamePlay.Events;
 using Flow.Sample.GamePlay.Models;
 using Flow.Sample.GamePlay.Systems.Base;

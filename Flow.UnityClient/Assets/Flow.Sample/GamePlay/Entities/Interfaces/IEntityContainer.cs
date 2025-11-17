@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Flow.Sample.Entities.Interfaces
+namespace Flow.Sample.GamePlay.Entities.Interfaces
 {
     public interface IEntityContainer
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Flow.Sample.Entities;
 using Flow.Sample.GamePlay.Components;
+using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Systems;
 
 namespace Flow.Sample.GamePlay.Contents.Attack
