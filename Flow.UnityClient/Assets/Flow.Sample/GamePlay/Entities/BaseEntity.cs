@@ -4,7 +4,7 @@ using Flow.Sample.GamePlay.Systems.Interfaces;
 using Flow.Sample.Logic.Interfaces;
 using UnityEngine;
 
-namespace Flow.Sample.Entities
+namespace Flow.Sample.GamePlay.Entities
 {
     public abstract class BaseEntity : MonoBehaviour, IPoolItem
     {

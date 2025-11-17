@@ -1,9 +1,9 @@
 using Flow.Core.Interfaces;
 using Flow.Sample.DI.Configs;
 using Flow.Sample.DI.Installers;
-using Flow.Sample.Entities;
-using Flow.Sample.Entities.Interfaces;
 using Flow.Sample.GamePlay;
+using Flow.Sample.GamePlay.Entities;
+using Flow.Sample.GamePlay.Entities.Interfaces;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;

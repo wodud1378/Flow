@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Flow.Sample.Entities;
-using Flow.Sample.Entities.Interfaces;
 using Flow.Sample.GamePlay.Components;
 using Flow.Sample.GamePlay.Configs;
+using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Events;
 using Flow.Sample.GamePlay.Systems.Base;
 using Flow.Sample.GamePlay.Systems.Interfaces;

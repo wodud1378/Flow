@@ -1,4 +1,4 @@
-using Flow.Sample.Entities;
+using Flow.Sample.GamePlay.Entities;
 using R3;
 
 namespace Flow.Sample.GamePlay.Events

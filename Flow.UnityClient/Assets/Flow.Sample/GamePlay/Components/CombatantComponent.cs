@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Flow.Sample.Entities;
 using Flow.Sample.GamePlay.Components.Interfaces;
 using Flow.Sample.GamePlay.Contents.Attack.Interfaces;
+using Flow.Sample.GamePlay.Entities;
 using UnityEngine;
 
 namespace Flow.Sample.GamePlay.Components

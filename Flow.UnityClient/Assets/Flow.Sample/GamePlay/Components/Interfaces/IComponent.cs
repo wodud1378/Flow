@@ -1,4 +1,4 @@
-using Flow.Sample.Entities;
+using Flow.Sample.GamePlay.Entities;
 
 namespace Flow.Sample.GamePlay.Components.Interfaces
 {

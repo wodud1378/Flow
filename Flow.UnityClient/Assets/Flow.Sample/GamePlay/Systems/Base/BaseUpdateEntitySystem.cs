@@ -1,7 +1,7 @@
 using System;
-using Flow.Sample.Entities;
-using Flow.Sample.Entities.Interfaces;
 using Flow.Sample.GamePlay.Components.Interfaces;
+using Flow.Sample.GamePlay.Entities;
+using Flow.Sample.GamePlay.Entities.Interfaces;
 using Flow.Sample.GamePlay.Systems.Interfaces;
 using UnityEngine;
 
