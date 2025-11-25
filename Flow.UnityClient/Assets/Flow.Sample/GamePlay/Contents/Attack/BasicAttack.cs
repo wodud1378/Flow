@@ -9,7 +9,7 @@ namespace Flow.Sample.GamePlay.Contents.Attack
     public class BasicAttack : IAttack
     {
         private readonly CombatantComponent _owner;
-        private readonly AttackData _data;
+        private readonly BasicAttackData _data;
         private readonly DetectSystem _detectSystem;
         private readonly DetectParamsProvider _detectParamsProvider;
 
@@ -18,9 +18,11 @@ namespace Flow.Sample.GamePlay.Contents.Attack
 
         private AttackContext _currentContext;
 
+        public AttackData Data => _data;
+
         public BasicAttack(
             CombatantComponent owner,
-            AttackData data,
+            BasicAttackData data,
             DetectSystem detectSystem,
             DetectParamsProvider detectParamsProvider,
             IAttackCondition condition,
@@ -40,7 +42,7 @@ namespace Flow.Sample.GamePlay.Contents.Attack
         {
             _viewSync.OnViewEvent -= OnViewEvent;
         }
-
+        
         public bool CanExecute()
         {
             return _condition.Ready;

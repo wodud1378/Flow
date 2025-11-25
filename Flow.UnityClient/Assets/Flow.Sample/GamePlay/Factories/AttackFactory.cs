@@ -1,4 +1,5 @@
-﻿using Flow.Sample.Data.StaticData.Attack;
+﻿using System;
+using Flow.Sample.Data.StaticData.Attack;
 using Flow.Sample.GamePlay.Components;
 using Flow.Sample.GamePlay.Contents.Attack;
 using Flow.Sample.GamePlay.Contents.Attack.Delay;
@@ -27,17 +28,23 @@ namespace Flow.Sample.GamePlay.Factories
 
         public IAttack Create(CombatantComponent owner, AttackData data)
         {
+            return data switch
+            {
+                BasicAttackData basic => CreateBasic(owner, basic),
+                _ => throw new ArgumentOutOfRangeException(nameof(data))
+            };
+        }
+
+        private BasicAttack CreateBasic(CombatantComponent owner, BasicAttackData data)
+        {
             return new BasicAttack(
                 owner,
                 data,
                 _detectSystem,
                 _detectParamsProvider,
-                GetCondition(data),
+                new CoolDown(data.cooldown),
                 _viewSyncProvider.Provide(data)
             );
         }
-
-        private IAttackCondition GetCondition(AttackData data) =>
-            new CoolDown(data.cooldown);
     }
 }

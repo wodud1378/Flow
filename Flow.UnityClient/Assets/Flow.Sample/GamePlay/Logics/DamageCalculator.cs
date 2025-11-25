@@ -1,7 +1,7 @@
 using Flow.Sample.GamePlay.Components;
-using Flow.Sample.Logic.Models;
+using Flow.Sample.GamePlay.Logics.Models;
 
-namespace Flow.Sample.Logic
+namespace Flow.Sample.GamePlay.Logics
 {
     public class DamageCalculator
     {

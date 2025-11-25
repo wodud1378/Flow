@@ -6,10 +6,10 @@ using Flow.Sample.GamePlay.Contents.Attack;
 using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Entities.Interfaces;
 using Flow.Sample.GamePlay.Events;
+using Flow.Sample.GamePlay.Logics;
+using Flow.Sample.GamePlay.Logics.Models;
 using Flow.Sample.GamePlay.Systems.Base;
 using Flow.Sample.GamePlay.Systems.Interfaces;
-using Flow.Sample.Logic;
-using Flow.Sample.Logic.Models;
 using VContainer;
 
 namespace Flow.Sample.GamePlay.Systems

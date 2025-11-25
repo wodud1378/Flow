@@ -1,4 +1,4 @@
-using Flow.Sample.Logic.Models;
+using Flow.Sample.GamePlay.Logics.Models;
 using R3;
 
 namespace Flow.Sample.GamePlay.Events

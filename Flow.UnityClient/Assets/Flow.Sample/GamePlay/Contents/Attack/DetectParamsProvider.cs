@@ -12,8 +12,6 @@ namespace Flow.Sample.GamePlay.Contents.Attack
         public IDetectParams Provide(CombatantComponent owner, TargetingData data)
         {
             var point = owner.transform.position;
-            
-            // move to field if needed.
             var filter = new ContactFilter2D
             {
                 useLayerMask = true,

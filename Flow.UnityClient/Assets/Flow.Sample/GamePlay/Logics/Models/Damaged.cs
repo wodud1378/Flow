@@ -1,6 +1,6 @@
 using Flow.Sample.GamePlay.Entities;
 
-namespace Flow.Sample.Logic.Models
+namespace Flow.Sample.GamePlay.Logics.Models
 {
     public interface IDamage
     {

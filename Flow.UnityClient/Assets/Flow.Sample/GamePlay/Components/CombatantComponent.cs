@@ -13,6 +13,7 @@ namespace Flow.Sample.GamePlay.Components
         
         [field:SerializeField] public BaseEntity Owner { get; private set; }
         [field:SerializeField] public StatusComponent Status { get; private set; }
+        
         public bool IsAlive => Status.RemainHp > 0;
         public Vector2 Forward { get; private set; }
         
