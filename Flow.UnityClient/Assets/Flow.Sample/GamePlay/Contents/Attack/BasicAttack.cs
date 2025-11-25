@@ -1,30 +1,36 @@
+using Flow.Sample.Data.StaticData.Attack;
 using Flow.Sample.GamePlay.Components;
 using Flow.Sample.GamePlay.Contents.Attack.Interfaces;
 using Flow.Sample.GamePlay.Contents.Attack.Models;
 using Flow.Sample.GamePlay.Systems;
-using Flow.Sample.GamePlay.Systems.Models;
 
 namespace Flow.Sample.GamePlay.Contents.Attack
 {
     public class BasicAttack : IAttack
     {
+        private readonly CombatantComponent _owner;
+        private readonly AttackData _data;
         private readonly DetectSystem _detectSystem;
+        private readonly DetectParamsProvider _detectParamsProvider;
 
         private readonly IAttackCondition _condition;
-        private readonly IDetectParams _detectParams;
         private readonly IAttackViewSync _viewSync;
 
         private AttackContext _currentContext;
 
         public BasicAttack(
+            CombatantComponent owner,
+            AttackData data,
             DetectSystem detectSystem,
+            DetectParamsProvider detectParamsProvider,
             IAttackCondition condition,
-            IDetectParams detectParams,
             IAttackViewSync viewSync)
         {
+            _owner = owner;
+            _data = data;
             _detectSystem = detectSystem;
+            _detectParamsProvider = detectParamsProvider;
             _condition = condition;
-            _detectParams = detectParams;
             _viewSync = viewSync;
 
             _viewSync.OnViewEvent += OnViewEvent;
@@ -43,7 +49,8 @@ namespace Flow.Sample.GamePlay.Contents.Attack
         public void Execute(AttackContext context)
         {
             _currentContext = context;
-            using var scope = _detectSystem.Detect<CombatantComponent>(_detectParams);
+            var detectParams = _detectParamsProvider.Provide(_owner, _data.targeting);
+            using var scope = _detectSystem.Detect<CombatantComponent>(detectParams);
             foreach (var component in scope.Detected)
             {
                 var combatant = component.GetComponent<CombatantComponent>();
@@ -54,7 +61,7 @@ namespace Flow.Sample.GamePlay.Contents.Attack
         }
 
         public void Update(float deltaTime) => _condition.Update(deltaTime);
-
+        
         private void OnViewEvent(AttackContext context, AttackViewEvent ev)
         {
             if(_currentContext != context)
@@ -71,7 +78,7 @@ namespace Flow.Sample.GamePlay.Contents.Attack
             }
         }
         
-        private void OnViewHitTiming() => _currentContext.RunAttack();
+        private void OnViewHitTiming() => _currentContext.RunAttack(_data.targeting.maxTarget);
 
         private void OnViewEnd() => _currentContext.Dispose();
     }

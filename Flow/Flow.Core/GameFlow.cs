@@ -13,8 +13,9 @@ namespace Flow.Core
 {
     public class GameFlow : MonoBehaviour
     {
+        private readonly List<IGameStateHandler> _gameStateHandlers = new();
+            
         private IGameContext _context;
-        private IGameStateHandler _gameStateHandler;
         
         private List<IInterruption> _interruptions;
         private IReadOnlyList<ICompletionAction> _completionActions;
@@ -37,7 +38,7 @@ namespace Flow.Core
                     return;
                 
                 _state = value;
-                _gameStateHandler?.OnGameState(_state);
+                _gameStateHandlers.ForEach(handler => handler.OnGameState(_state));
             }
         }
 
@@ -45,11 +46,9 @@ namespace Flow.Core
 
         public void InitializeDependencies(
             IGameContext context,
-            IGameStateHandler gameStateHandler,
             IFlowServiceProvider serviceProvider)
         {
             _context = context;
-            _gameStateHandler = gameStateHandler;
             _interruptions = serviceProvider.Interruption.ProvideInterruptions();
 
             var (actionList, asyncActionList) = serviceProvider.CompleteAction.GetActions();
@@ -60,6 +59,8 @@ namespace Flow.Core
                 .GetUpdateGroups()
                 .ToDictionary(x => x.UpdateType, x => x);
         }
+        
+        public void RegisterGameSTateHandler(IGameStateHandler handler) => _gameStateHandlers.Add(handler);
         
         public async UniTask RunAsync()
         {

@@ -1,5 +1,4 @@
 using R3;
-using VContainer;
 
 namespace Flow.Sample.GamePlay.Events
 {

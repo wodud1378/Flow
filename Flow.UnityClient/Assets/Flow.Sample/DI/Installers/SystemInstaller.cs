@@ -9,22 +9,26 @@ namespace Flow.Sample.DI.Installers
         public static void InstallBasicSystems(this IContainerBuilder builder)
         {
             var lifetime = Lifetime.Singleton;
-            
+
             builder.Register<PoolSystem>(lifetime);
-            builder.Register<ComponentCacheSystem>(lifetime);
-            builder.Register<CleaningSystem>(lifetime);
-            builder.Register<UpdateContextSystem>(lifetime);
-            builder.Register<WaveSystem>(lifetime);
-            builder.Register<MoveOnPathSystem>(lifetime);
+            builder.RegisterWithInterfaces<ComponentCacheSystem>(lifetime);
+            builder.RegisterWithInterfaces<CleaningSystem>(lifetime);
+            builder.RegisterWithInterfaces<UpdateContextSystem>(lifetime);
+            builder.RegisterWithInterfaces<WaveSystem>(lifetime);
+            builder.RegisterWithInterfaces<MoveOnPathSystem>(lifetime);
+            builder.RegisterWithInterfaces<EnemyGoalDetectSystem>(lifetime);
         }
-        
+
         public static void InstallCombatSystems(this IContainerBuilder builder, IConfig config)
         {
             var lifetime = Lifetime.Singleton;
 
             builder.RegisterInstance(config);
             builder.Register<DetectSystem>(lifetime);
-            builder.Register<CombatSystem>(lifetime);
+            builder.RegisterWithInterfaces<CombatSystem>(lifetime);
         }
+
+        private static void RegisterWithInterfaces<T>(this IContainerBuilder builder, Lifetime lifetime) => 
+            builder.Register<T>(lifetime).AsImplementedInterfaces();
     }
 }

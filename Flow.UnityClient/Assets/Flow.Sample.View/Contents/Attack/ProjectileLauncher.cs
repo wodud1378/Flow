@@ -4,7 +4,6 @@ using Flow.Sample.GamePlay.Contents.Attack;
 using Flow.Sample.GamePlay.Contents.Attack.Interfaces;
 using Flow.Sample.GamePlay.Contents.Attack.Models;
 using Flow.Sample.GamePlay.Systems;
-using Flow.Sample.Logic;
 using UnityEngine;
 using VContainer;
 
@@ -45,7 +44,8 @@ namespace Flow.Sample.View.Contents.Attack
             var startPosition = (Vector2)context.Attacker.Owner.transform.position;
             foreach (var target in context.Targets)
             {
-                var projectile = _poolSystem.GetObject(prefab, p => { p.transform.position = startPosition; });
+                var projectile = _poolSystem.GetObject(prefab);
+                projectile.transform.position = startPosition;
 
                 _launchedProjectiles.Add(projectile);
 

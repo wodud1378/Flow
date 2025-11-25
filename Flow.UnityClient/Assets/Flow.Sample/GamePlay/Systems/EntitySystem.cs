@@ -1,5 +1,4 @@
-﻿using System;
-using Flow.Sample.GamePlay.Entities;
+﻿using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Entities.Interfaces;
 using VContainer;
 
@@ -21,9 +20,9 @@ namespace Flow.Sample.GamePlay.Systems
             _idGenerator = idGenerator;
         }
 
-        public T New<T>(T prefab, Action<T> onBeforeActive = null) where T : BaseEntity
+        public T New<T>(T prefab) where T : BaseEntity
         {
-            var entity = _poolSystem.GetObject(prefab, onBeforeActive);
+            var entity = _poolSystem.GetObject(prefab);
             if(entity.DestroyTriggered)
                 entity.CancelDestroySelf();
 

@@ -22,12 +22,18 @@ namespace Flow.Sample.GamePlay.Contents.Attack
 
         public void RegisterTarget(BaseEntity target) => _targets.Add(target);
 
-        public void RunAttack()
+        public void RunAttack(int maxTargetCount)
         {
             if (Attacker == null || !Attacker.Owner.IsValid)
                 return;
+
+            int count = _targets.Count;
+            for (int i = 0; i < count && i < maxTargetCount; ++i)
+            {
+                var target = _targets[i];
+                _system.ApplyDamage(Attacker.Owner, target);
+            }
             
-            _targets.ForEach(x => _system.ApplyDamage(Attacker.Owner, x));
             _targets.Clear();
         }
 

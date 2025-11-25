@@ -1,11 +1,10 @@
 ﻿using System;
 using Flow.Sample.GamePlay.Entities;
-using Flow.Sample.Logic.Interfaces;
 using UnityEngine;
 
 namespace Flow.Sample.View.Contents.Attack
 {
-    public class Projectile : MonoBehaviour, IPoolItem
+    public class Projectile : MonoBehaviour
     {
         public event Action OnReachedTarget;
 

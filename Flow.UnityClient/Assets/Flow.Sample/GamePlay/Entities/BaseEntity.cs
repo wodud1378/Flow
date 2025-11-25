@@ -1,12 +1,11 @@
 using System.Threading;
 using Flow.Sample.GamePlay.Components.Interfaces;
 using Flow.Sample.GamePlay.Systems.Interfaces;
-using Flow.Sample.Logic.Interfaces;
 using UnityEngine;
 
 namespace Flow.Sample.GamePlay.Entities
 {
-    public abstract class BaseEntity : MonoBehaviour, IPoolItem
+    public abstract class BaseEntity : MonoBehaviour
     {
         public int Id { get; private set; }
         public bool IsValid { get; private set; }

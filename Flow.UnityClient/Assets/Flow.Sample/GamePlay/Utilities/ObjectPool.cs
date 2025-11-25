@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Flow.Sample.Logic.Interfaces;
 using UnityEngine;
 
-namespace Flow.Sample.Logic
+namespace Flow.Sample.GamePlay.Utilities
 {
-    public class ObjectPool<T> where T : IPoolItem
+    public class ObjectPool<T> where T : MonoBehaviour
     {
         private readonly Func<T> _createInstance;
         private readonly List<T> _activated = new();
@@ -20,7 +19,7 @@ namespace Flow.Sample.Logic
             _createInstance = createInstance;
         }
 
-        public T Get(Action<T> onBeforeActive = null)
+        public T Get()
         {
             T obj;
             if (HasSpare)
@@ -32,10 +31,8 @@ namespace Flow.Sample.Logic
             {
                 obj = _createInstance.Invoke();
             }
-
-            onBeforeActive?.Invoke(obj);
             
-            obj.Activate();
+            obj.gameObject.SetActive(true);
             _activated.Add(obj);
 
             return obj;
@@ -43,7 +40,7 @@ namespace Flow.Sample.Logic
 
         public void Release(T obj)
         {
-            obj.Deactivate();
+            obj.gameObject.SetActive(false);
 
             _activated.Remove(obj);
             _spares.Add(obj);

@@ -45,11 +45,11 @@ namespace Flow.Sample.GamePlay.Systems
                 _events.HpChangedStream.OnNext(_remainHp);
             }
 
-            if (_remainHp <= 0f)
-            {
-                _events.PlayerDeadStream.OnNext(Unit.Default);
-                Enabled = false;
-            }
+            if (_remainHp > 0f) 
+                return;
+            
+            _events.PlayerDeadStream.OnNext(Unit.Default);
+            Enabled = false;
         }
 
         public void RequestIncrease(float value) => _addValueQueue.Enqueue(value);

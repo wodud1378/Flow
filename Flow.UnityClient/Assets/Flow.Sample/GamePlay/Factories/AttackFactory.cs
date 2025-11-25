@@ -1,11 +1,9 @@
-﻿using System;
-using Flow.Sample.Data.StaticData;
+﻿using Flow.Sample.Data.StaticData.Attack;
+using Flow.Sample.GamePlay.Components;
+using Flow.Sample.GamePlay.Contents.Attack;
 using Flow.Sample.GamePlay.Contents.Attack.Delay;
 using Flow.Sample.GamePlay.Contents.Attack.Interfaces;
 using Flow.Sample.GamePlay.Systems;
-using Flow.Sample.GamePlay.Systems.Models;
-using Flow.Sample.Logic.Interfaces;
-using UnityEngine;
 using VContainer;
 
 namespace Flow.Sample.GamePlay.Factories
@@ -13,35 +11,33 @@ namespace Flow.Sample.GamePlay.Factories
     public class AttackFactory
     {
         private readonly DetectSystem _detectSystem;
-        private readonly PoolSystem _poolSystem;
-        private readonly ComponentCacheSystem _componentCacheSystem;
+        private readonly DetectParamsProvider _detectParamsProvider;
+        private readonly IAttackViewSyncProvider _viewSyncProvider;
 
         [Inject]
-        public AttackFactory(DetectSystem detectSystem, PoolSystem poolSystem, ComponentCacheSystem componentCacheSystem)
+        public AttackFactory(
+            DetectSystem detectSystem,
+            DetectParamsProvider detectParamsProvider,
+            IAttackViewSyncProvider viewSyncProvider)
         {
             _detectSystem = detectSystem;
-            _poolSystem = poolSystem;
-            _componentCacheSystem = componentCacheSystem;
-        }
-        
-        public IAttack Create(AttackData data)
-        {
-            throw new NotImplementedException();
+            _detectParamsProvider = detectParamsProvider;
+            _viewSyncProvider = viewSyncProvider;
         }
 
-        private IAttackCondition GetCondition(AttackData data) => 
+        public IAttack Create(CombatantComponent owner, AttackData data)
+        {
+            return new BasicAttack(
+                owner,
+                data,
+                _detectSystem,
+                _detectParamsProvider,
+                GetCondition(data),
+                _viewSyncProvider.Provide(data)
+            );
+        }
+
+        private IAttackCondition GetCondition(AttackData data) =>
             new CoolDown(data.cooldown);
-
-        private IDetectParams GetDetectParams(AttackData data, Vector2 position)
-        {
-            var filter = new ContactFilter2D
-            {
-                useTriggers = true,
-                useLayerMask = true,
-                layerMask = default,
-            };
-
-            return new CircleParams(data.range, position, filter);
-        }
     }
 }

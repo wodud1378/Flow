@@ -16,10 +16,8 @@ namespace Flow.Sample.GamePlay.Systems
         
         private void Create(TowerEntity prefab, Vector2 position)
         {
-            var tower = _entitySystem.New(
-                prefab,
-                t => t.transform.position = position
-            );
+            var tower = _entitySystem.New(prefab);
+            tower.transform.position = position;
         }
     }
 }

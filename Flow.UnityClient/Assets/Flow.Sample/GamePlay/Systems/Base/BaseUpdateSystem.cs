@@ -1,8 +1,8 @@
-using Flow.Sample.GamePlay.Events;
+using Flow.Core.Updates.Interfaces;
 
 namespace Flow.Sample.GamePlay.Systems.Base
 {
-    public abstract class BaseUpdateSystem
+    public abstract class BaseUpdateSystem : IUpdate
     {
         public bool Enabled { get; set; }
         
