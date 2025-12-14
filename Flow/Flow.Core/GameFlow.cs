@@ -60,7 +60,7 @@ namespace Flow.Core
                 .ToDictionary(x => x.UpdateType, x => x);
         }
         
-        public void RegisterGameSTateHandler(IGameStateHandler handler) => _gameStateHandlers.Add(handler);
+        public void RegisterGameStateHandler(IGameStateHandler handler) => _gameStateHandlers.Add(handler);
         
         public async UniTask RunAsync()
         {
