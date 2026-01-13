@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Flow.Sample.GamePlay.Utilities;
 using UnityEngine;
@@ -8,28 +9,34 @@ namespace Flow.Sample.GamePlay.Systems
     public class PoolSystem
     {
         private readonly Dictionary<object, object> _pools = new();
-        
-        public T GetObject<T>(T prefab) where T : MonoBehaviour
+        private readonly Dictionary<GameObject, object> _keyLookup = new();
+
+        public T GetObject<T>(T prefab, Func<T, T> customInstantiate = null) where T : MonoBehaviour
         {
-            var pool = GetPool(prefab);
+            var pool = GetPool(prefab, customInstantiate);
             return pool?.Get();
         }
-
-        private ObjectPool<T> GetPool<T>(T prefab) where T : MonoBehaviour
+        
+        public void Destroy<T>(T entity) where T : MonoBehaviour
         {
-            if(_pools.TryGetValue(prefab, out var obj))
-                return obj as ObjectPool<T>;
+            if (!_keyLookup.TryGetValue(entity.gameObject, out var poolObj) ||
+                poolObj is not ObjectPool<T> pool)
+                return;
             
-            var pool = new ObjectPool<T>(() => CreateInstance(prefab));
+            pool.Release(entity);
+        }
+
+        private ObjectPool<T> GetPool<T>(T prefab, Func<T, T> customInstantiate = null) where T : MonoBehaviour
+        {
+            if (_pools.TryGetValue(prefab, out var obj))
+                return obj as ObjectPool<T>;
+
+            var pool = new ObjectPool<T>(prefab, customInstantiate ?? CreateInstance);
             _pools[prefab] = pool;
+            _keyLookup[prefab.gameObject] = pool;
             return pool;
         }
 
-        public void Destroy<T>(T entity) where T : MonoBehaviour
-        {
-            var pool = GetPool(entity);
-            pool?.Release(entity);
-        }
 
         private T CreateInstance<T>(T prefab) where T : MonoBehaviour => Object.Instantiate(prefab);
     }

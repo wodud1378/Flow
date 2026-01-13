@@ -6,16 +6,17 @@ namespace Flow.Sample.GamePlay.Utilities
 {
     public class ObjectPool<T> where T : MonoBehaviour
     {
-        private readonly Func<T> _createInstance;
         private readonly List<T> _activated = new();
         private readonly List<T> _spares = new();
 
-        private readonly GameObject _prefab;
+        private readonly T _prefab;
+        private readonly Func<T, T> _createInstance;
 
         private bool HasSpare => _spares.Count > 0;
 
-        public ObjectPool(Func<T> createInstance)
+        public ObjectPool(T prefab, Func<T, T> createInstance)
         {
+            _prefab = prefab;
             _createInstance = createInstance;
         }
 
@@ -29,7 +30,7 @@ namespace Flow.Sample.GamePlay.Utilities
             }
             else
             {
-                obj = _createInstance.Invoke();
+                obj = _createInstance.Invoke(_prefab);
             }
             
             obj.gameObject.SetActive(true);
