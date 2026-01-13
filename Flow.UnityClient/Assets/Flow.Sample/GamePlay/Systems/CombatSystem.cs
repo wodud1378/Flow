@@ -9,7 +9,6 @@ using Flow.Sample.GamePlay.Events;
 using Flow.Sample.GamePlay.Logics;
 using Flow.Sample.GamePlay.Logics.Models;
 using Flow.Sample.GamePlay.Systems.Base;
-using Flow.Sample.GamePlay.Systems.Interfaces;
 using VContainer;
 
 namespace Flow.Sample.GamePlay.Systems
@@ -25,11 +24,10 @@ namespace Flow.Sample.GamePlay.Systems
         [Inject]
         public CombatSystem(
             IEntityContainer entityContainer,
-            IComponentProvider componentCache,
             DamageCalculator damageCalculator,
             CombatEvents events,
             IConfig config)
-            : base(entityContainer, componentCache, config.UpdateEntitySystemBufferSize)
+            : base(entityContainer, config.UpdateEntitySystemBufferSize)
         {
             _damageCalculator = damageCalculator;
             _events = events;
@@ -40,7 +38,7 @@ namespace Flow.Sample.GamePlay.Systems
             var combatant = As<CombatantComponent>(entity);
             if (!combatant.IsAlive)
                 return;
-            
+
             combatant.ManualUpdate(deltaTime);
             foreach (var attack in combatant.Attacks)
             {
@@ -57,7 +55,7 @@ namespace Flow.Sample.GamePlay.Systems
 
         public void ApplyDamage(BaseEntity attacker, BaseEntity victim)
         {
-            var damage = CalculateDamage(As<StatusComponent>(attacker));
+            var damage = CalculateDamage(attacker.GetSystemComponent<StatusComponent>());
             ApplyDamage(attacker, victim, damage);
         }
 
@@ -80,7 +78,7 @@ namespace Flow.Sample.GamePlay.Systems
                 return false;
             }
 
-            combatant = As<CombatantComponent>(entity);
+            combatant = entity.GetSystemComponent<CombatantComponent>();
             return combatant != null && combatant.IsAlive;
         }
 
@@ -89,10 +87,10 @@ namespace Flow.Sample.GamePlay.Systems
             var context = _contextPool.Count > 0 ? _contextPool.Dequeue() : new AttackContext(this);
             context.Clear();
             context.SetAttacker(attacker);
-            
+
             return context;
         }
-        
+
         public void ReturnContext(AttackContext context) => _contextPool.Enqueue(context);
     }
 }

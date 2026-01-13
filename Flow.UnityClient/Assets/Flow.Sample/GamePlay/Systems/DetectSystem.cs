@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Flow.Sample.GamePlay.Configs;
+using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Systems.Models;
 using UnityEngine;
 using VContainer;
@@ -9,7 +10,6 @@ namespace Flow.Sample.GamePlay.Systems
 {
     public class DetectSystem
     {
-        private readonly ComponentCacheSystem _cache;
         private readonly Vector2[] _arcCheckBuffer = new Vector2[4];
 
         private readonly Stack<Collider2D[]> _overlapBufferPool = new();
@@ -18,9 +18,8 @@ namespace Flow.Sample.GamePlay.Systems
         public int BufferSize { get; set; }
 
         [Inject]
-        public DetectSystem(ComponentCacheSystem cache, IConfig config)
+        public DetectSystem(IConfig config)
         {
-            _cache = cache;
             BufferSize = config.DetectBufferSize;
         }
 
@@ -31,7 +30,7 @@ namespace Flow.Sample.GamePlay.Systems
                 ArcParams arcParams => DetectArc(arcParams),
                 BoxParams boxParams => DetectBox(boxParams),
                 CircleParams circleParams => DetectCircle(circleParams),
-                _ => new (
+                _ => new(
                     this,
                     null,
                     ReadOnlySpan<Collider2D>.Empty
@@ -42,13 +41,23 @@ namespace Flow.Sample.GamePlay.Systems
         public DetectScope<T> Detect<T>(IDetectParams param) where T : Component
         {
             using var scope = Detect(param);
-            
+
             var buffer = RentComponentBuffer();
             int bufferIndex = 0;
             foreach (var collider in scope.Detected)
             {
-                if (!_cache.TryGetComponent<T>(collider.gameObject, out var component))
-                    continue;
+                var entity = collider.GetComponent<BaseEntity>();
+                T component;
+                if (entity != null)
+                {
+                    if (!entity.TryGetComponent(out component))
+                        continue;
+                }
+                else
+                {
+                    if (!collider.TryGetComponent(out component))
+                        continue;
+                }
 
                 buffer[bufferIndex++] = component;
             }
@@ -64,7 +73,7 @@ namespace Flow.Sample.GamePlay.Systems
         {
             var buffer = RentOverlapBuffer();
             var found = Physics2D.OverlapBox(param.Point, param.Size, param.Angle, param.Filter, buffer);
-            return new (
+            return new(
                 this,
                 buffer,
                 buffer.AsSpan(0, found)

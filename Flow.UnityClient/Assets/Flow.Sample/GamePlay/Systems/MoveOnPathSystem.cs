@@ -4,7 +4,6 @@ using Flow.Sample.GamePlay.Configs;
 using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Entities.Interfaces;
 using Flow.Sample.GamePlay.Systems.Base;
-using Flow.Sample.GamePlay.Systems.Interfaces;
 using VContainer;
 
 namespace Flow.Sample.GamePlay.Systems
@@ -12,13 +11,12 @@ namespace Flow.Sample.GamePlay.Systems
     public class MoveOnPathSystem : BaseUpdateEntitySystem
     {
         protected override Type[] EntityFilter { get; } = { typeof(MoveOnPathComponent) };
-        
+
         [Inject]
         public MoveOnPathSystem(
             IEntityContainer entityContainer,
-            IComponentProvider componentCache, 
-            IConfig config) 
-            : base(entityContainer, componentCache, config.UpdateEntitySystemBufferSize)
+            IConfig config)
+            : base(entityContainer, config.UpdateEntitySystemBufferSize)
         {
         }
 

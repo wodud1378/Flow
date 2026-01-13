@@ -4,7 +4,6 @@ using Flow.Sample.GamePlay.Configs;
 using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Entities.Interfaces;
 using Flow.Sample.GamePlay.Systems.Base;
-using Flow.Sample.GamePlay.Systems.Interfaces;
 using VContainer;
 
 namespace Flow.Sample.GamePlay.Systems
@@ -12,16 +11,15 @@ namespace Flow.Sample.GamePlay.Systems
     public class EnemyGoalDetectSystem : BaseUpdateEntitySystem
     {
         protected override Type[] EntityFilter { get; } = { typeof(MoveOnPathComponent), typeof(StatusComponent) };
-        
+
         private readonly PlayerHpSystem _playerHpSystem;
 
         [Inject]
         public EnemyGoalDetectSystem(
             IEntityContainer entityContainer,
-            IComponentProvider componentCache,
             IConfig config,
             PlayerHpSystem playerHpSystem)
-            : base(entityContainer, componentCache, config.UpdateEntitySystemBufferSize)
+            : base(entityContainer, config.UpdateEntitySystemBufferSize)
         {
             _playerHpSystem = playerHpSystem;
         }

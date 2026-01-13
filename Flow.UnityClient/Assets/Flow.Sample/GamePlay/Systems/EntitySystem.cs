@@ -1,4 +1,4 @@
-﻿using Flow.Sample.GamePlay.Entities;
+using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Entities.Interfaces;
 using VContainer;
 
@@ -8,15 +8,13 @@ namespace Flow.Sample.GamePlay.Systems
     {
         private readonly IEntityContainer _entityContainer;
         private readonly PoolSystem _poolSystem;
-        private readonly ComponentCacheSystem _cacheSystem;
         private readonly EntityIdGenerator _idGenerator;
 
         [Inject]
-        public EntitySystem(IEntityContainer entityContainer, PoolSystem poolSystem, ComponentCacheSystem cacheSystem, EntityIdGenerator idGenerator)
+        public EntitySystem(IEntityContainer entityContainer, PoolSystem poolSystem, EntityIdGenerator idGenerator)
         {
             _entityContainer = entityContainer;
             _poolSystem = poolSystem;
-            _cacheSystem = cacheSystem;
             _idGenerator = idGenerator;
         }
 
@@ -27,16 +25,16 @@ namespace Flow.Sample.GamePlay.Systems
                 entity.CancelDestroySelf();
 
             var id = _idGenerator.GenerateId(entity);
-            entity.Initialize(id, _cacheSystem);
+            entity.Initialize(id);
             _entityContainer.Register(entity);
 
             return entity;
         }
-        
+
         public void Invalidate<T>(T entity) where T : BaseEntity
         {
             entity.Invalidate();
-            
+
             _poolSystem.Destroy(entity);
             _entityContainer.Unregister(entity);
         }

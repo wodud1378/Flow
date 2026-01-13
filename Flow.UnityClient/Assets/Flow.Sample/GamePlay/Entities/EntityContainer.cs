@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Flow.Sample.GamePlay.Components.Interfaces;
 using Flow.Sample.GamePlay.Entities.Interfaces;
-using Flow.Sample.GamePlay.Systems.Interfaces;
 using UnityEngine;
 
 namespace Flow.Sample.GamePlay.Entities
@@ -17,13 +16,6 @@ namespace Flow.Sample.GamePlay.Entities
 
         private readonly List<HashSet<BaseEntity>> _hashSetsBuffer = new();
         private readonly HashSet<BaseEntity> _hashSetBuffer = new();
-
-        private readonly IComponentProvider _componentProvider;
-
-        public EntityContainer(IComponentProvider componentProvider)
-        {
-            _componentProvider = componentProvider;
-        }
 
         public BaseEntity GetEntity(int id) => _entities.GetValueOrDefault(id);
 
@@ -102,8 +94,8 @@ namespace Flow.Sample.GamePlay.Entities
         public void Register<T>(T entity) where T : BaseEntity
         {
             _entities[entity.Id] = entity;
-            
-            var components = _componentProvider.GetComponents(entity);
+
+            var components = entity.GetSystemComponents();
             foreach (var component in components)
             {
                 RegisterToTypeIndex(component.GetType(), entity);
@@ -113,8 +105,8 @@ namespace Flow.Sample.GamePlay.Entities
         public void Unregister<T>(T entity) where T : BaseEntity
         {
             _entities.Remove(entity.Id);
-            
-            var components = _componentProvider.GetComponents(entity);
+
+            var components = entity.GetSystemComponents();
             foreach (var component in components)
             {
                 UnregisterFromTypeIndex(component.GetType(), entity);

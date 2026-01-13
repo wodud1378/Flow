@@ -11,7 +11,6 @@ namespace Flow.Sample.DI.Installers
             var lifetime = Lifetime.Singleton;
 
             builder.Register<PoolSystem>(lifetime);
-            builder.RegisterWithInterfaces<ComponentCacheSystem>(lifetime);
             builder.RegisterWithInterfaces<CleaningSystem>(lifetime);
             builder.RegisterWithInterfaces<UpdateContextSystem>(lifetime);
             builder.RegisterWithInterfaces<WaveSystem>(lifetime);
@@ -28,7 +27,7 @@ namespace Flow.Sample.DI.Installers
             builder.RegisterWithInterfaces<CombatSystem>(lifetime);
         }
 
-        private static void RegisterWithInterfaces<T>(this IContainerBuilder builder, Lifetime lifetime) => 
+        private static void RegisterWithInterfaces<T>(this IContainerBuilder builder, Lifetime lifetime) =>
             builder.Register<T>(lifetime).AsImplementedInterfaces();
     }
 }

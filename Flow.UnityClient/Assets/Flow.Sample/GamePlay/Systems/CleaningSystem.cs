@@ -15,14 +15,12 @@ namespace Flow.Sample.GamePlay.Systems
         private readonly Queue<BaseEntity> _queue = new();
         private readonly Queue<BaseEntity> _destroyQueue = new();
         private readonly EntitySystem _entitySystem;
-        private readonly ComponentCacheSystem _componentCache;
 
         [Inject]
-        public CleaningSystem(EntitySystem entitySystem, IEntityContainer entityContainer, ComponentCacheSystem componentCache) : base(
-            entityContainer, componentCache, 256)
+        public CleaningSystem(EntitySystem entitySystem, IEntityContainer entityContainer)
+            : base(entityContainer, 256)
         {
             _entitySystem = entitySystem;
-            _componentCache = componentCache;
         }
 
         protected override void OnUpdate(float deltaTime)
@@ -31,13 +29,12 @@ namespace Flow.Sample.GamePlay.Systems
 
             foreach (var entity in _queue)
             {
-                if (!entity.DestroyTriggered) 
+                if (!entity.DestroyTriggered)
                     continue;
-                
-                _componentCache.Clear(entity);
+
                 _destroyQueue.Enqueue(entity);
             }
-            
+
             DestroyLazy();
         }
 
@@ -48,7 +45,7 @@ namespace Flow.Sample.GamePlay.Systems
 
             if (!entity.DestroyTriggered)
                 return;
-            
+
             Object.Destroy(entity.gameObject);
         }
 
@@ -59,7 +56,7 @@ namespace Flow.Sample.GamePlay.Systems
 
             if (entity.IsValid)
                 return;
-            
+
             _queue.Enqueue(entity);
         }
     }
