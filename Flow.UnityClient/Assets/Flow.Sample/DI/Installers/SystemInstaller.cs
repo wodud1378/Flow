@@ -11,6 +11,8 @@ namespace Flow.Sample.DI.Installers
             var lifetime = Lifetime.Singleton;
 
             builder.Register<PoolSystem>(lifetime);
+            builder.Register<PlayerHpSystem>(lifetime);
+            builder.Register<EnemySpawnSystem>(lifetime);
             builder.RegisterWithInterfaces<CleaningSystem>(lifetime);
             builder.RegisterWithInterfaces<UpdateContextSystem>(lifetime);
             builder.RegisterWithInterfaces<WaveSystem>(lifetime);
