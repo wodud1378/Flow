@@ -1,6 +1,7 @@
 using Flow.Sample.GamePlay.Entities.Interfaces;
 using Flow.Sample.GamePlay.Events;
 using Flow.Sample.GamePlay.Models;
+using Flow.Sample.GamePlay.States;
 using Flow.Sample.GamePlay.Systems.Base;
 using Flow.Sample.GamePlay.Systems.Interfaces;
 using Flow.Sample.GamePlay.Systems.Models;
@@ -13,9 +14,10 @@ namespace Flow.Sample.GamePlay.Systems
         private readonly IEnemyWaveProvider _waveProvider;
         private readonly EnemySpawnSystem _spawnSystem;
         private readonly PlayerEvents _events;
+        private readonly GameStateSystem _gameStateSystem;
 
         private Wave _wave;
-        
+
         private EnemyWave _enemyWave;
         private int _spawnedCount;
         private float _spawnIntervalElapsed;
@@ -25,13 +27,15 @@ namespace Flow.Sample.GamePlay.Systems
         public WaveSystem(IEnemyWaveProvider waveProvider,
             IEntityContainer entityContainer,
             EnemySpawnSystem spawnSystem,
-            PlayerEvents events)
+            PlayerEvents events,
+            GameStateSystem gameStateSystem)
         {
             _wave = new Wave(0, 0, 0);
-            
+
             _waveProvider = waveProvider;
             _events = events;
             _spawnSystem = spawnSystem;
+            _gameStateSystem = gameStateSystem;
         }
 
         protected override void OnStartRunning()
@@ -88,6 +92,7 @@ namespace Flow.Sample.GamePlay.Systems
             if (_waveProvider.IsLastWave())
             {
                 Enabled = false;
+                _gameStateSystem.SetAllWavesComplete();
                 return;
             }
             

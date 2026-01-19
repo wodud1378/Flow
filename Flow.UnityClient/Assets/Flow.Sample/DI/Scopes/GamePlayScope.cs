@@ -2,6 +2,7 @@ using Flow.Core.Interfaces;
 using Flow.Sample.DI.Configs;
 using Flow.Sample.DI.Installers;
 using Flow.Sample.GamePlay;
+using Flow.Sample.View.DI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -21,6 +22,8 @@ namespace Flow.Sample.DI.Scopes
             builder.InstallServices();
             builder.InstallBasicSystems();
             builder.InstallCombatSystems(config);
+            builder.InstallInputSystems();
+            builder.InstallViewServices();
         }
     }
 }

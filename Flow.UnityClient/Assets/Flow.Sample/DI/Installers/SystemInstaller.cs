@@ -1,4 +1,5 @@
 using Flow.Sample.GamePlay.Configs;
+using Flow.Sample.GamePlay.States;
 using Flow.Sample.GamePlay.Systems;
 using VContainer;
 
@@ -18,6 +19,12 @@ namespace Flow.Sample.DI.Installers
             builder.RegisterWithInterfaces<WaveSystem>(lifetime);
             builder.RegisterWithInterfaces<MoveOnPathSystem>(lifetime);
             builder.RegisterWithInterfaces<EnemyGoalDetectSystem>(lifetime);
+
+            // New systems
+            builder.Register<EnemyDeathSystem>(lifetime);
+            builder.Register<ResourceSystem>(lifetime);
+            builder.RegisterWithInterfaces<StatusEffectSystem>(lifetime);
+            builder.Register<GameStateSystem>(lifetime);
         }
 
         public static void InstallCombatSystems(this IContainerBuilder builder, IConfig config)

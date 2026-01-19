@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Flow.Sample.Data.StaticData.Attack;
 using Flow.Sample.GamePlay.Components;
 using Flow.Sample.GamePlay.Contents.Attack;
@@ -30,6 +30,8 @@ namespace Flow.Sample.GamePlay.Factories
         {
             return data switch
             {
+                SlowAttackData slow => CreateSlow(owner, slow),
+                AOEAttackData aoe => CreateAOE(owner, aoe),
                 BasicAttackData basic => CreateBasic(owner, basic),
                 _ => throw new ArgumentOutOfRangeException(nameof(data))
             };
@@ -38,6 +40,30 @@ namespace Flow.Sample.GamePlay.Factories
         private BasicAttack CreateBasic(CombatantComponent owner, BasicAttackData data)
         {
             return new BasicAttack(
+                owner,
+                data,
+                _detectSystem,
+                _detectParamsProvider,
+                new CoolDown(data.cooldown),
+                _viewSyncProvider.Provide(data)
+            );
+        }
+
+        private AOEAttack CreateAOE(CombatantComponent owner, AOEAttackData data)
+        {
+            return new AOEAttack(
+                owner,
+                data,
+                _detectSystem,
+                _detectParamsProvider,
+                new CoolDown(data.cooldown),
+                _viewSyncProvider.Provide(data)
+            );
+        }
+
+        private SlowAttack CreateSlow(CombatantComponent owner, SlowAttackData data)
+        {
+            return new SlowAttack(
                 owner,
                 data,
                 _detectSystem,

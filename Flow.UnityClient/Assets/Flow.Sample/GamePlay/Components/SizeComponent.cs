@@ -6,7 +6,7 @@ namespace Flow.Sample.GamePlay.Components
 {
     public class SizeComponent : MonoBehaviour, IComponent
     {
-        [field:SerializeField] public float Radius { get; private set; }
+        [field:SerializeField] public float Radius { get;  set; }
         [field:SerializeField] public BaseEntity Owner { get; private set; }
 
         private void OnValidate()

@@ -3,6 +3,8 @@ using Flow.Sample.GamePlay.Contents.Attack;
 using Flow.Sample.GamePlay.Factories;
 using Flow.Sample.GamePlay.Logics;
 using Flow.Sample.GamePlay.Services;
+using Flow.Sample.GamePlay.Systems;
+using Flow.Sample.GamePlay.Systems.Interfaces;
 using VContainer;
 
 namespace Flow.Sample.DI.Installers
@@ -21,6 +23,7 @@ namespace Flow.Sample.DI.Installers
 
             // Game Services
             builder.Register<TowerBuildService>(lifetime);
+            builder.Register<ITowerInstallValidator, TowerInstallValidator>(lifetime);
 
             // Factories
             builder.Register<AttackFactory>(lifetime);

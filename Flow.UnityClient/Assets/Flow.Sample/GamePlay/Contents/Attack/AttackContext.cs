@@ -33,7 +33,28 @@ namespace Flow.Sample.GamePlay.Contents.Attack
                 var target = _targets[i];
                 _system.ApplyDamage(Attacker.Owner, target);
             }
-            
+
+            _targets.Clear();
+        }
+
+        public void RunAttackWithMultiplier(float damageMultiplier)
+        {
+            if (Attacker == null || !Attacker.Owner.IsValid)
+                return;
+
+            var baseDamage = _system.CalculateDamage(Attacker.Owner.GetSystemComponent<StatusComponent>());
+            var multipliedDamage = new Logics.Models.Damage(baseDamage.Value * damageMultiplier);
+
+            foreach (var target in _targets)
+            {
+                _system.ApplyDamage(Attacker.Owner, target, multipliedDamage);
+            }
+
+            _targets.Clear();
+        }
+
+        public void ClearTargets()
+        {
             _targets.Clear();
         }
 

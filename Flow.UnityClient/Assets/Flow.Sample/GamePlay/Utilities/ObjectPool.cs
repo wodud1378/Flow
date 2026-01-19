@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Flow.Sample.GamePlay.Utilities
 {
-    public class ObjectPool<T> where T : MonoBehaviour
+    public class ObjectPool<T> where T : Component
     {
         private readonly List<T> _activated = new();
         private readonly List<T> _spares = new();

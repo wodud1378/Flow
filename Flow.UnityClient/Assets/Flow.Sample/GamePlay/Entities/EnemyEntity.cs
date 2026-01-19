@@ -3,12 +3,16 @@ using UnityEngine;
 
 namespace Flow.Sample.GamePlay.Entities
 {
-    [RequireComponent(typeof(MoveOnPathComponent), typeof(CombatantComponent), typeof(StatusComponent))]
+    [RequireComponent(typeof(MoveOnPathComponent))]
+    [RequireComponent(typeof(CombatantComponent))]
+    [RequireComponent(typeof(StatusComponent))]
+    [RequireComponent(typeof(StatusEffectComponent))]
     public class EnemyEntity : BaseEntity
     {
         [field: SerializeField] public MoveOnPathComponent Move { get; private set; }
         [field: SerializeField] public CombatantComponent Combatant { get; private set; }
         [field: SerializeField] public StatusComponent Status { get; private set; }
+        [field: SerializeField] public StatusEffectComponent StatusEffect { get; private set; }
 
         private void OnValidate()
         {
@@ -20,6 +24,9 @@ namespace Flow.Sample.GamePlay.Entities
 
             if (Status == null)
                 Status = GetComponent<StatusComponent>();
+
+            if (StatusEffect == null)
+                StatusEffect = GetComponent<StatusEffectComponent>();
         }
     }
 }

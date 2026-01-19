@@ -44,13 +44,14 @@ namespace Flow.Sample.GamePlay.Components
         {
             if (ReachedToEnd)
                 return;
-            
+
             if (_path.Points.Length < 2)
                 return;
 
+            var speedMultiplier = GetSpeedMultiplier();
             var current = (Vector2)transform.position;
             var target = _path.Points[_pathIndex];
-            var step = Mathf.Pow(Speed * deltaTime, 2);
+            var step = Mathf.Pow(Speed * speedMultiplier * deltaTime, 2);
             var diff = target - current;
             var distance = diff.sqrMagnitude;
             if (distance <= nextPointThreshold)
@@ -80,6 +81,17 @@ namespace Flow.Sample.GamePlay.Components
                 // 1초에 360도 회전 가능.
                 360f * deltaTime
             );
+        }
+
+        private float GetSpeedMultiplier()
+        {
+            if (Owner == null)
+                return 1f;
+
+            if (!Owner.TryGetComponent<StatusEffectComponent>(out var effectComponent))
+                return 1f;
+
+            return effectComponent.SpeedMultiplier;
         }
     }
 }
