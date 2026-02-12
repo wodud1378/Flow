@@ -85,7 +85,7 @@ namespace Flow.Sample.View.UI.HUD
             {
                 stateText.text = state switch
                 {
-                    GameState.Ready => "Press SPACE to Start",
+                    GameState. => "Press SPACE to Start",
                     GameState.Playing => "",
                     GameState.Paused => "PAUSED",
                     GameState.GameOver => "GAME OVER",

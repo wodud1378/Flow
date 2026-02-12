@@ -2,11 +2,13 @@
     "name": "Flow.Sample",
     "rootNamespace": "",
     "references": [
-        "Flow.Core",
-        "Flow.Sample.Data",
         "VContainer",
         "UniTask",
-        "R3.Unity"
+        "R3.Unity",
+        "Flow.Core",
+        "Flow.Sample.Data",
+        "Flow.Sample.GamePlay",
+        "Flow.Sample.View"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

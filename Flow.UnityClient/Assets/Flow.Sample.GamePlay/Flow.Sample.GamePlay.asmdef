@@ -1,12 +1,12 @@
 {
-    "name": "Flow.Sample.View",
+    "name": "Flow.Sample.GamePlay",
     "rootNamespace": "",
     "references": [
-        "Unity.TextMeshPro",
         "VContainer",
+        "UniTask",
+        "R3.Unity",
         "Flow.Core",
-        "Flow.Sample.Data",
-        "Flow.Sample.GamePlay"
+        "Flow.Sample.Data"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

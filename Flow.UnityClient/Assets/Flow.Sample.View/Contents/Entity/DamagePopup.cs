@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Flow.Sample.GamePlay.Entities;
 using Flow.Sample.GamePlay.Events;
+using Flow.Sample.GamePlay.Logics.Models;
 using Flow.Sample.GamePlay.Models;
 using Flow.Sample.GamePlay.Systems;
 using R3;
@@ -47,17 +49,18 @@ namespace Flow.Sample.View.Contents.Entity
             UpdatePopups(Time.deltaTime);
         }
 
-        private void OnDamaged(DamageResult result)
+        private void OnDamaged(Damaged damaged)
         {
-            if (textPrefab == null)
+            if (!IsValidEntity(damaged.Attacker) ||
+                !IsValidEntity(damaged.Victim))
                 return;
-
-            if (result.Target == null || !result.Target.IsValid)
-                return;
-
-            var position = result.Target.transform.position + Vector3.up * 0.5f;
-            SpawnPopup(position, result.FinalDamage, result.IsCritical);
+            
+            var position = damaged.Victim.transform.position + Vector3.up * 0.5f;
+            var damage = damaged.Damage;
+            SpawnPopup(position, damage.Value, damage is CriticalDamage);
         }
+
+        private bool IsValidEntity(BaseEntity entity) => entity != null && entity.IsValid;
 
         private void SpawnPopup(Vector3 position, float damage, bool isCritical)
         {

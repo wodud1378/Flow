@@ -14,7 +14,6 @@ namespace Flow.Sample.GamePlay.States
         private readonly PlayerEvents _playerEvents;
         private readonly EnemyEvents _enemyEvents;
         private readonly IEntityContainer _entityContainer;
-
         private readonly IDisposable _subscriptions;
 
         private GameState _currentState = GameState.None;
