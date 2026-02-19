@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Flow.Sample.GamePlay.Events;
+using Flow.Sample.GamePlay.Events.Models;
 using Flow.Sample.GamePlay.Systems.Base;
 using Flow.Sample.GamePlay.Systems.Interfaces;
 using R3;
@@ -42,7 +43,9 @@ namespace Flow.Sample.GamePlay.Systems
                 var value = _addValueQueue.Dequeue();
                 var prev = _remainHp;
                 _remainHp = Mathf.Clamp(prev + value, 0f, _statusProvider.Hp);
-                _events.HpChangedStream.OnNext(_remainHp);
+                _events.HpChangedStream.OnNext(new HpChanged(
+                    prev, _remainHp, _statusProvider.Hp
+                ));
             }
 
             if (_remainHp > 0f) 

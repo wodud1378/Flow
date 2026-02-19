@@ -1,7 +1,7 @@
 using System;
 using Flow.Sample.GamePlay.Events;
+using Flow.Sample.GamePlay.Events.Models;
 using Flow.Sample.GamePlay.Models;
-using Flow.Sample.GamePlay.States;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -26,22 +26,16 @@ namespace Flow.Sample.View.UI.HUD
         [SerializeField] private TextMeshProUGUI stateText;
         [SerializeField] private GameObject startPrompt;
 
-        private float _maxHp = 100f;
         private IDisposable _subscriptions;
 
         [Inject]
         public void Initialize(
-            PlayerEvents playerEvents,
-            GameStateEvents stateEvents,
-            GamePlay.Systems.Interfaces.IPlayerStatusProvider statusProvider)
+            PlayerEvents playerEvents)
         {
-            _maxHp = statusProvider.Hp;
-
             _subscriptions = Disposable.Combine(
                 playerEvents.OnHpChanged.Subscribe(OnHpChanged),
                 playerEvents.OnMeticsUpdated.Subscribe(OnMetricsUpdated),
-                playerEvents.OnWaveUpdated.Subscribe(OnWaveUpdated),
-                stateEvents.OnStateChanged.Subscribe(OnStateChanged)
+                playerEvents.OnWaveUpdated.Subscribe(OnWaveUpdated)
             );
         }
 
@@ -50,52 +44,24 @@ namespace Flow.Sample.View.UI.HUD
             _subscriptions?.Dispose();
         }
 
-        private void OnHpChanged(float hp)
+        private void OnHpChanged(HpChanged hpChanged)
         {
-            var ratio = hp / _maxHp;
+            var ratio = hpChanged.Current / hpChanged.Max;
 
-            if (hpFillImage != null)
-                hpFillImage.fillAmount = ratio;
-
-            if (hpText != null)
-                hpText.text = $"{(int)hp} / {(int)_maxHp}";
+            hpFillImage.fillAmount = ratio;
+            hpText.text = $"{(int)hpChanged.Current} / {(int)hpChanged.Max}";
         }
 
         private void OnMetricsUpdated(Metrics metrics)
         {
-            if (goldText != null)
-                goldText.text = $"{metrics.Gold}";
-
-            if (scoreText != null)
-                scoreText.text = $"{metrics.Score}";
+            goldText.text = $"{metrics.Gold}";
+            scoreText.text = $"{metrics.Score}";
         }
 
         private void OnWaveUpdated(Wave wave)
         {
-            if (waveText != null)
-                waveText.text = $"Wave {wave.Number}";
-
-            if (enemyCountText != null)
-                enemyCountText.text = $"Killed: {wave.EnemyKilled}";
-        }
-
-        private void OnStateChanged(GameState state)
-        {
-            if (stateText != null)
-            {
-                stateText.text = state switch
-                {
-                    GameState. => "Press SPACE to Start",
-                    GameState.Playing => "",
-                    GameState.Paused => "PAUSED",
-                    GameState.GameOver => "GAME OVER",
-                    GameState.Victory => "VICTORY!",
-                    _ => ""
-                };
-            }
-
-            if (startPrompt != null)
-                startPrompt.SetActive(state == GameState.Ready);
+            waveText.text = $"Wave {wave.Number}";
+            enemyCountText.text = $"Killed: {wave.EnemyKilled}";
         }
     }
 }

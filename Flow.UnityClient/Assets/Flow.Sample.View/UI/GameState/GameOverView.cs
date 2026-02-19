@@ -38,7 +38,7 @@ namespace Flow.Sample.View.UI.GameState
         private void OnGameEnd(bool victory)
         {
             if (victory)
-                return; // VictoryView handles this
+                return;
 
             Show();
         }
@@ -48,11 +48,8 @@ namespace Flow.Sample.View.UI.GameState
             panel?.SetActive(true);
             Time.timeScale = 0f;
 
-            if (titleText != null)
-                titleText.text = "GAME OVER";
-
-            if (messageText != null)
-                messageText.text = "Your base has been destroyed!";
+            titleText.text = "GAME OVER";
+            messageText.text = "Your base has been destroyed!";
         }
 
         private void OnRestartClicked()

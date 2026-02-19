@@ -116,7 +116,7 @@ namespace Flow.Sample.GamePlay.Contents.Attack
             }
 
             // Apply damage with explosion multiplier
-            _currentContext.RunAttackWithMultiplier(_data.explosionDamageMultiplier);
+            _currentContext.RunAttackWithMultiplier(_data.damageMultiplier);
         }
 
         private void OnViewEnd() => _currentContext.Dispose();

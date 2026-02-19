@@ -1,28 +1,30 @@
-using System;
 using System.Collections.Generic;
 using Flow.Sample.Data.StaticData.Tower;
 using Flow.Sample.GamePlay.Input;
+using Flow.Sample.GamePlay.Services.Interfaces;
 using Flow.Sample.GamePlay.Systems;
+using R3;
 using UnityEngine;
-using UnityEngine.UI;
 using VContainer;
 
 namespace Flow.Sample.View.UI.Tower
 {
-    public class TowerSelectionView : MonoBehaviour
+    public class TowerSelectionView : MonoBehaviour, ITowerSelector
     {
         [SerializeField] private Transform buttonContainer;
         [SerializeField] private TowerButtonView buttonPrefab;
         [SerializeField] private List<TowerData> availableTowers;
 
-        private InputEvents _inputEvents;
-        private ResourceSystem _resourceSystem;
+        public ReadOnlyReactiveProperty<TowerData> Selected => _selected;
+        
         private readonly List<TowerButtonView> _buttons = new();
+        private readonly ReactiveProperty<TowerData> _selected = new();
+        
+        private ResourceSystem _resourceSystem;
 
         [Inject]
-        public void Initialize(InputEvents inputEvents, ResourceSystem resourceSystem)
+        public void Initialize(ResourceSystem resourceSystem)
         {
-            _inputEvents = inputEvents;
             _resourceSystem = resourceSystem;
 
             CreateButtons();
@@ -52,49 +54,6 @@ namespace Flow.Sample.View.UI.Tower
             }
         }
 
-        private void OnTowerButtonClicked(TowerData data)
-        {
-            _inputEvents.TowerSelectedStream.OnNext(data);
-        }
-    }
-
-    public class TowerButtonView : MonoBehaviour
-    {
-        [SerializeField] private Button button;
-        [SerializeField] private Image iconImage;
-        [SerializeField] private TMPro.TextMeshProUGUI costText;
-        [SerializeField] private CanvasGroup canvasGroup;
-
-        public TowerData TowerData { get; private set; }
-
-        private Action<TowerData> _onClick;
-
-        public void Setup(TowerData data, Action<TowerData> onClick)
-        {
-            TowerData = data;
-            _onClick = onClick;
-
-            if (iconImage != null && data.icon != null)
-                iconImage.sprite = data.icon;
-
-            if (costText != null)
-                costText.text = $"{data.buildCost}";
-
-            button?.onClick.AddListener(OnClick);
-        }
-
-        public void SetInteractable(bool interactable)
-        {
-            if (button != null)
-                button.interactable = interactable;
-
-            if (canvasGroup != null)
-                canvasGroup.alpha = interactable ? 1f : 0.5f;
-        }
-
-        private void OnClick()
-        {
-            _onClick?.Invoke(TowerData);
-        }
+        private void OnTowerButtonClicked(TowerData data) => _selected.Value = data;
     }
 }

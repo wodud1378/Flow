@@ -7,6 +7,5 @@ namespace Flow.Sample.Data.StaticData.Attack
     {
         [Header("AOE Settings")]
         public float explosionRadius = 2f;
-        public float explosionDamageMultiplier = 0.5f;
     }
 }

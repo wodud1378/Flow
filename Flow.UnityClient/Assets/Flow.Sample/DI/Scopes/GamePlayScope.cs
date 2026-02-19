@@ -12,6 +12,7 @@ namespace Flow.Sample.DI.Scopes
     public class GamePlayScope : LifetimeScope
     {
         [SerializeField] private Config config;
+        [SerializeField] private ViewInstaller viewInstaller;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -23,7 +24,8 @@ namespace Flow.Sample.DI.Scopes
             builder.InstallBasicSystems();
             builder.InstallCombatSystems(config);
             builder.InstallInputSystems();
-            builder.InstallViewServices();
+            
+            viewInstaller.InstallViewServices(builder);
         }
     }
 }

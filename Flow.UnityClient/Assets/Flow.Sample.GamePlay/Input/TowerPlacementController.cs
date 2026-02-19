@@ -2,6 +2,7 @@ using System;
 using Flow.Sample.Data.StaticData.Tower;
 using Flow.Sample.GamePlay.Events;
 using Flow.Sample.GamePlay.Services;
+using Flow.Sample.GamePlay.Services.Interfaces;
 using Flow.Sample.GamePlay.Systems.Base;
 using R3;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace Flow.Sample.GamePlay.Input
 
         [Inject]
         public TowerPlacementController(
+            ITowerSelector towerSelector,
             InputEvents inputEvents,
             TowerBuildService buildService,
             TowerPlacementEvents placementEvents)
@@ -35,7 +37,7 @@ namespace Flow.Sample.GamePlay.Input
             _placementEvents = placementEvents;
 
             _subscriptions = Disposable.Combine(
-                inputEvents.OnTowerSelected.Subscribe(OnTowerSelected),
+                towerSelector.Selected.Subscribe(OnTowerSelected),
                 inputEvents.OnPlacementConfirmed.Subscribe(OnPlacementConfirmed),
                 inputEvents.OnPlacementCancelled.Subscribe(_ => CancelPlacement()),
                 inputEvents.OnPointerMoved.Subscribe(OnPointerMoved)
@@ -47,14 +49,14 @@ namespace Flow.Sample.GamePlay.Input
             _subscriptions?.Dispose();
         }
 
-        public void SelectTower(TowerData data)
+        private void SelectTower(TowerData data)
         {
             _selectedTower = data;
             _isPlacing = true;
             _placementEvents.PlacementStartedStream.OnNext(data);
         }
 
-        public void CancelPlacement()
+        private void CancelPlacement()
         {
             if (!_isPlacing)
                 return;
